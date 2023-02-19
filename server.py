@@ -4,7 +4,7 @@ import waitress
 
 from flask import Flask, abort, jsonify
 
-MODEL = os.environ.get("MODEL", "bigscience/bloomz-7b1-mt")
+MODEL = os.environ.get("MODEL", "bigscience/bloomz-560m")
 HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = os.environ.get("PORT", "80")
 
