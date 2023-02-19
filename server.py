@@ -14,7 +14,7 @@ SERVER_THREADS = os.environ.get("SERVER_THREADS", "8")
 SERVER_IDENTITY = os.environ.get("SERVER_IDENTITY", "basaran")
 SERVER_CONNECTION_LIMIT = os.environ.get("SERVER_CONNECTION_LIMIT", "1024")
 SERVER_CHANNEL_TIMEOUT = os.environ.get("SERVER_CHANNEL_TIMEOUT", "300")
-SERVER_MODEL_NAME = os.environ.get("SERVER_MODEL_NAME", MODEL)
+SERVER_MODEL_NAME = os.environ.get("SERVER_MODEL_NAME", "") or MODEL
 
 
 # Create and configure application.
