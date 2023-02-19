@@ -50,7 +50,7 @@ def resource_not_found(e):
 
 @app.errorhandler(500)
 def internal_server_error(_):
-    return jsonify(error="internal_server_error"), 500
+    return jsonify(error="internal server error"), 500
 
 
 # Start serving the WSGI application.
