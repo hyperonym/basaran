@@ -39,14 +39,19 @@ class Model:
             return_tensors="pt",
             return_offsets_mapping=True,
         ).to(self.device)
+        input_ids = inputs["input_ids"]
+        offset_mapping = inputs["offset_mapping"]
 
-        input_ids = inputs["input_ids"].repeat(n, 1)
+        # Clamp numerical arguments.
+        min_tokens = max(min_tokens, 0)
+        max_tokens = max(max_tokens, 1)
+        n = max(n, 1)
+        logprobs = max(logprobs, 0)
 
         # TODO(peakji): echo prompt tokens (echo).
 
-        # TODO(peakji): ensure logprobs and min_token and max_tokens >=0
         stream = self.generate(
-            input_ids,
+            input_ids.repeat(n, 1),
             logprobs,
             min_new_tokens=min_tokens,
             max_new_tokens=max_tokens,
