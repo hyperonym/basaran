@@ -28,11 +28,13 @@ SERVER_MODEL_NAME = os.environ.get("SERVER_MODEL_NAME", "") or MODEL
 
 # Load model from local files or download from Hugging Face Hub.
 if __name__ == "__main__":
-    local_model = os.path.isdir(MODEL)
-    local_only = MODEL_LOCAL_FILES_ONLY.lower() in ("1", "true")
+    local_files_only = MODEL_LOCAL_FILES_ONLY.lower() in ("1", "true")
     load_in_8bit = MODEL_LOAD_IN_8BIT.lower() in ("1", "true")
-    if not local_model and not local_only:
+    if not os.path.isdir(MODEL) and not local_files_only:
         download_snapshot(MODEL, MODEL_CACHE_DIR)
+    # Use the --download-only argument to download a model without loading
+    # into memory. This allows CI/CD runners with limited memory to build
+    # container images with bundled models.
     if "--download-only" in sys.argv[1:]:
         sys.exit(0)
     model = load_model(MODEL, MODEL_CACHE_DIR, load_in_8bit)
