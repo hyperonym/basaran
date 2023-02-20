@@ -2,5 +2,5 @@ accelerate~=0.16.0
 bitsandbytes~=0.37.0
 flask~=2.2.3
 huggingface-hub~=0.12.1
-transformers[torch]~=4.26.1
+transformers[torch,sentencepiece]~=4.26.1
 waitress~=2.1.2
