@@ -14,15 +14,6 @@ from transformers import (
 )
 
 
-DEFAULT_MIN_TOKENS = 0
-DEFAULT_MAX_TOKENS = 256
-DEFAULT_TEMPERATURE = 0.7
-DEFAULT_TOP_P = 0.5
-DEFAULT_N = 1
-DEFAULT_LOGPROBS = 0
-DEFAULT_ECHO = False
-
-
 class Model:
     """Model wraps around a language model to provide stream decoding."""
 
@@ -35,13 +26,13 @@ class Model:
     def __call__(
         self,
         prompt,
-        min_tokens=DEFAULT_MIN_TOKENS,
-        max_tokens=DEFAULT_MAX_TOKENS,
-        temperature=DEFAULT_TEMPERATURE,
-        top_p=DEFAULT_TOP_P,
-        n=DEFAULT_N,
-        logprobs=DEFAULT_LOGPROBS,
-        echo=DEFAULT_ECHO,
+        min_tokens=0,
+        max_tokens=16,
+        temperature=1.0,
+        top_p=1.0,
+        n=1,
+        logprobs=0,
+        echo=False,
     ):
         inputs = self.tokenizer(
             prompt,
@@ -115,7 +106,7 @@ class Model:
 
         return processor
 
-    def generate(self, input_ids, logprobs, **kwargs):
+    def generate(self, input_ids, logprobs=0, **kwargs):
         """Generate a stream of predicted tokens using the language model."""
 
         # Store the original batch size and input length.
