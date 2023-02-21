@@ -39,10 +39,35 @@ COMPLETION_MAX_STREAM_INTERVAL_MS = int(
 )
 
 
+def str_to_bool(v):
+    """Convert from string to boolean."""
+    return str(v).lower() in ("yes", "true", "t", "1")
+
+
+def parse_options(schema):
+    """Parse options in the request body and query parameters."""
+    options = {}
+    payload = request.get_json(silent=True)
+    for key, dtype in schema.items():
+        if dtype == float:
+            dtypes = (int, float)
+        else:
+            dtypes = (dtype,)
+        if dtype == bool:
+            dtype_fn = str_to_bool
+        else:
+            dtype_fn = dtype
+        if key in request.args:
+            options[key] = request.args.get(key, dtype(), type=dtype_fn)
+        elif payload and key in payload and isinstance(payload[key], dtypes):
+            options[key] = dtype(payload[key])
+    return options
+
+
 # Load model from local files or download from Hugging Face Hub.
 if __name__ == "__main__":
-    local_files_only = MODEL_LOCAL_FILES_ONLY.lower() in ("1", "true")
-    load_in_8bit = MODEL_LOAD_IN_8BIT.lower() in ("1", "true")
+    local_files_only = str_to_bool(MODEL_LOCAL_FILES_ONLY)
+    load_in_8bit = str_to_bool(MODEL_LOAD_IN_8BIT)
     if not os.path.isdir(MODEL) and not local_files_only:
         download_snapshot(MODEL, MODEL_CACHE_DIR)
     # Use the --download-only argument to download a model without loading
@@ -59,22 +84,6 @@ app.json.ensure_ascii = False
 app.json.sort_keys = False
 app.json.compact = True
 app.url_map.strict_slashes = False
-
-
-def parse_options(schema):
-    """Parse options in the request body and query parameters."""
-    options = {}
-    payload = request.get_json(silent=True)
-    for key, dtype in schema.items():
-        if dtype == float:
-            dtypes = (int, float)
-        else:
-            dtypes = (dtype,)
-        if key in request.args:
-            options[key] = request.args.get(key, dtype(), type=dtype)
-        elif payload and key in payload and isinstance(payload[key], dtypes):
-            options[key] = dtype(payload[key])
-    return options
 
 
 @app.route("/v1/models")
