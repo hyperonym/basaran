@@ -1,5 +1,5 @@
+import choice
 import copy
-
 import huggingface_hub
 import torch
 
@@ -34,13 +34,13 @@ class Model:
         logprobs=0,
         echo=False,
     ):
-        inputs = self.tokenizer(
-            prompt,
-            return_tensors="pt",
-            return_offsets_mapping=True,
-        ).to(self.device)
-        input_ids = inputs["input_ids"]
-        offset_mapping = inputs["offset_mapping"]
+        """Create a completion stream for the provided prompt."""
+        if isinstance(prompt, str):
+            input_ids = self.tokenize(prompt)
+        elif isinstance(prompt, torch.Tensor) and prompt.dim() == 1:
+            input_ids = prompt
+        else:
+            raise TypeError("prompt must be a string or a 1-d tensor")
 
         # Clamp numerical arguments.
         min_tokens = max(min_tokens, 0)
@@ -48,31 +48,82 @@ class Model:
         n = max(n, 1)
         logprobs = max(logprobs, 0)
 
-        # TODO(peakji): echo prompt tokens (echo).
+        # Keep track of sequence status and offsets.
+        finished = [False] * n
+        text_offsets = [0] * n
 
-        stream = self.generate(
-            input_ids.repeat(n, 1),
-            logprobs,
-            min_new_tokens=min_tokens,
-            max_new_tokens=max_tokens,
-            temperature=temperature,
-            top_p=top_p,
-        )
+        # Echo prompt tokens.
+        for token in input_ids:
+            text = self.tokenizer.decode(token, skip_special_tokens=True)
+            if logprobs > 0:
+                dist = self.top_distribution(token, 0, [], [])
+            else:
+                dist = (None, None, None)
+            for i in range(n):
+                if echo:
+                    yield choice.map(text, i, *dist, text_offsets[i])
+                text_offsets[i] += len(text)
+
+        # Yield predicted tokens.
         for (
             tokens,
             token_logprobs,
             top_tokens,
             top_logprobs,
             status,
-        ) in stream:
-            # TODO(peakji): handle multiple completions.
-            #
-            text = self.tokenizer.decode(tokens[0], skip_special_tokens=True)
-            # prob = round(float(token_logprobs[0]), 8)
-            print(text, sep=" ", end="", flush=True)
-            # print(text, tokens, token_logprobs)
-            # print(top_tokens, top_logprobs)
-            # print(status)
+        ) in self.generate(
+            input_ids[None, :].repeat(n, 1),
+            logprobs,
+            min_new_tokens=min_tokens,
+            max_new_tokens=max_tokens,
+            temperature=temperature,
+            top_p=top_p,
+        ):
+            for i in range(n):
+                if finished[i]:
+                    continue
+                token = tokens[i]
+                logprob = token_logprobs[i]
+                text = self.tokenizer.decode(token, skip_special_tokens=True)
+                if logprobs > 0:
+                    dist = self.top_distribution(
+                        token, logprob, top_tokens[i], top_logprobs[i]
+                    )
+                else:
+                    dist = (None, None, None)
+
+                # Check if the sequence has finished.
+                if status[i] == 0:
+                    finish = "stop"
+                elif status[i] == -1:
+                    finish = "length"
+                else:
+                    finish = None
+                if status[i] != 1:
+                    finished[i] = True
+
+                yield choice.map(text, i, *dist, text_offsets[i], finish)
+                text_offsets[i] += len(text)
+
+    def tokenize(self, text):
+        """Tokenize a string into a sequence of token IDs."""
+        batch = self.tokenizer(text, return_tensors="pt")
+        return batch["input_ids"][0].to(self.device)
+
+    def top_distribution(self, token, logprob, top_tokens, top_logprobs):
+        """Collect log probabilities of the most likely tokens."""
+        token = self.tokenizer.decode(token)
+        top_tokens = self.tokenizer.batch_decode(top_tokens)
+
+        # Do not use tensor operations as logprobs may be of list type.
+        logprob = round(float(logprob), 8)
+        top_logprobs = [round(float(p), 8) for p in top_logprobs]
+
+        # Always include the log probability of the selected token.
+        distribution = dict(zip(top_tokens, top_logprobs))
+        distribution[token] = logprob
+
+        return token, logprob, distribution
 
     def logits_processor(self, config, input_length):
         """Set up logits processor based on the generation config."""
