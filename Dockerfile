@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . .
 
 # Install app dependencies
-RUN pip install -U pip && pip install -r requirements.txt
+RUN pip install -U pip && pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu116
 
 # Expose ports
 EXPOSE 80
