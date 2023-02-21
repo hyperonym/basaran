@@ -196,7 +196,8 @@ class Model:
             encoder_kwargs.pop("use_cache", None)
             encoder_kwargs["input_ids"] = input_ids
             encoder_kwargs["return_dict"] = True
-            kwargs["encoder_outputs"] = encoder(**encoder_kwargs)
+            with torch.inference_mode():
+                kwargs["encoder_outputs"] = encoder(**encoder_kwargs)
 
             # Reinitialize inputs for the decoder.
             decoder_start_token_id = config.decoder_start_token_id
@@ -217,12 +218,13 @@ class Model:
             inputs = self.model.prepare_inputs_for_generation(
                 input_ids, **kwargs
             )  # noqa: E501
-            outputs = self.model(
-                **inputs,
-                return_dict=True,
-                output_attentions=False,
-                output_hidden_states=False,
-            )
+            with torch.inference_mode():
+                outputs = self.model(
+                    **inputs,
+                    return_dict=True,
+                    output_attentions=False,
+                    output_hidden_states=False,
+                )
 
             # Pre-process the probability distribution of the next tokens.
             logits = outputs.logits[:, -1, :]
