@@ -216,18 +216,16 @@ def create_completion_json(options, template):
 
 
 @app.errorhandler(400)
-def bad_request(e):
-    return jsonify(error=e.description), 400
-
-
 @app.errorhandler(404)
-def resource_not_found(e):
-    return jsonify(error=e.description), 404
-
-
+@app.errorhandler(405)
+@app.errorhandler(406)
+@app.errorhandler(413)
+@app.errorhandler(414)
+@app.errorhandler(415)
 @app.errorhandler(500)
-def internal_server_error(_):
-    return jsonify(error="internal server error"), 500
+@app.errorhandler(503)
+def http_error_handler(e):
+    return jsonify(error={"message": e.description}), e.code
 
 
 # Start serving the WSGI application.
