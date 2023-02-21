@@ -228,7 +228,8 @@ class Model:
 
             # Pre-process the probability distribution of the next tokens.
             logits = outputs.logits[:, -1, :]
-            logits = processor(input_ids, logits)
+            with torch.inference_mode():
+                logits = processor(input_ids, logits)
             probs = torch.nn.functional.softmax(logits, dim=-1)
 
             # Select deterministic or stochastic decoding strategy.
