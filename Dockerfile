@@ -12,6 +12,9 @@ RUN pip install -U pip && pip install -r requirements.txt --extra-index-url http
 # Expose ports
 EXPOSE 80
 
+# Force the stdout and stderr streams to be unbuffered
+ENV PYTHONUNBUFFERED="1"
+
 # Provide default environment variables
 ENV MODEL="bigscience/bloomz-560m"
 ENV HOST="0.0.0.0"
