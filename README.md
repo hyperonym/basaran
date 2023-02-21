@@ -1,6 +1,6 @@
 # Basaran
 
-Basaran is an API server for text generation using autoregressive language models. It provides a streaming API based on [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#event_stream_format) that supports various decoding strategies. With a powerful language model, Basaran can be used as an open source alternative to the [OpenAI text completion API](https://platform.openai.com/docs/api-reference/completions/create).
+Basaran is an open source alternative to the [OpenAI text completion API](https://platform.openai.com/docs/api-reference/completions/create). It provides a compatible streaming API for your [🤗 Transformers](https://huggingface.co/docs/transformers/index)-based [text generation models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads).
 
 ## License
 
