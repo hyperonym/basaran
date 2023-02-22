@@ -21,6 +21,10 @@ clean:
 docker-hub:
 	@docker buildx build --push --tag $(DOCKER_HUB_IMAGE) .
 
+.PHONY: docker-hub-%
+docker-hub-%:
+	@docker buildx build --push --tag $(DOCKER_HUB_OWNER)/$(NAME):$* --file deployments/bundles/$*.Dockerfile .
+
 .PHONY: github-packages
 github-packages:
 	@docker buildx build --push --tag $(GITHUB_PACKAGES_IMAGE) .
