@@ -1,4 +1,4 @@
-FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
+FROM nvcr.io/nvidia/pytorch:22.08-py3
 
 # Create app directory
 WORKDIR /app
@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . .
 
 # Install app dependencies
-RUN pip install -U pip && pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu116
+RUN pip install -U pip && pip install -r requirements.txt
 
 # Expose ports
 EXPOSE 80
