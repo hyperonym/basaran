@@ -115,8 +115,8 @@ class Model:
 
     def encode(self, text):
         """Encode a string into a tensor of token IDs."""
-        batch = self.tokenizer(text, return_tensors="pt")
-        return batch["input_ids"][0].to(self.device)
+        batch = self.tokenizer.encode(text, return_tensors="pt")
+        return batch[0].to(self.device)
 
     def decode(self, token, prev_token, prev_text):
         """Decode token to string while handling surrogates and whitespace."""
