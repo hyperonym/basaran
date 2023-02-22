@@ -29,7 +29,3 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push images to Docker Hub
         run: make docker-hub
-      - name: Build and push bundled images to Docker Hub
-        run: |
-          make docker-hub-bloomz-560m
-          make docker-hub-bloomz-7b1-mt
