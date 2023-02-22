@@ -15,6 +15,9 @@ EXPOSE 80
 # Force the stdout and stderr streams to be unbuffered
 ENV PYTHONUNBUFFERED="1"
 
+# Hide welcome message from bitsandbytes
+ENV BITSANDBYTES_NOWELCOME="1"
+
 # Provide default environment variables
 ENV MODEL="bigscience/bloomz-560m"
 ENV HOST="0.0.0.0"
