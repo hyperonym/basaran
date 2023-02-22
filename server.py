@@ -186,7 +186,7 @@ def create_completion_stream(options, template):
 
 def create_completion_json(options, template):
     # Tokenize the prompt before passing to the model to count token usage.
-    options["prompt"] = model.tokenize(options["prompt"])
+    options["prompt"] = model.encode(options["prompt"])
     prompt_tokens = options["prompt"].shape[-1]
     completion_tokens = 0
 

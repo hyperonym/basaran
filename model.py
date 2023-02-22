@@ -36,7 +36,7 @@ class Model:
     ):
         """Create a completion stream for the provided prompt."""
         if isinstance(prompt, str):
-            input_ids = self.tokenize(prompt)
+            input_ids = self.encode(prompt)
         elif isinstance(prompt, torch.Tensor) and prompt.dim() == 1:
             input_ids = prompt
         else:
@@ -51,10 +51,12 @@ class Model:
         # Keep track of sequence status and offsets.
         finished = [False] * n
         text_offsets = [0] * n
+        prev_tokens = [-1] * n
+        prev_texts = [""] * n
 
         # Echo prompt tokens.
         for token in input_ids:
-            text = self.tokenizer.decode(token, skip_special_tokens=True)
+            text = self.decode(token, prev_tokens[0], prev_texts[0])
             if logprobs > 0:
                 dist = self.top_distribution(token, 0, [], [])
             else:
@@ -63,6 +65,9 @@ class Model:
                 if echo:
                     yield choice.map(text, i, *dist, text_offsets[i])
                 text_offsets[i] += len(text)
+                prev_tokens[i] = token
+                if text:
+                    prev_texts[i] = text
 
         # Yield predicted tokens.
         for (
@@ -84,7 +89,7 @@ class Model:
                     continue
                 token = tokens[i]
                 logprob = token_logprobs[i]
-                text = self.tokenizer.decode(token, skip_special_tokens=True)
+                text = self.decode(token, prev_tokens[i], prev_texts[i])
                 if logprobs > 0:
                     dist = self.top_distribution(
                         token, logprob, top_tokens[i], top_logprobs[i]
@@ -104,11 +109,38 @@ class Model:
 
                 yield choice.map(text, i, *dist, text_offsets[i], finish)
                 text_offsets[i] += len(text)
+                prev_tokens[i] = token
+                if text:
+                    prev_texts[i] = text
 
-    def tokenize(self, text):
-        """Tokenize a string into a sequence of token IDs."""
+    def encode(self, text):
+        """Encode a string into a tensor of token IDs."""
         batch = self.tokenizer(text, return_tensors="pt")
         return batch["input_ids"][0].to(self.device)
+
+    def decode(self, token, prev_token, prev_text):
+        """Decode token to string while handling surrogates and whitespace."""
+        text = self.tokenizer.decode(token, skip_special_tokens=True)
+        if prev_token < 0:
+            return "" if text == "�" else text
+
+        # Decode the current token together with the previous one.
+        bigram = [prev_token, token]
+        bigram = self.tokenizer.decode(bigram, skip_special_tokens=True)
+
+        # Handle replacement characters (0xFFFD).
+        if text == "�":
+            return "" if "�" in bigram else bigram
+
+        # Update bigram if the previous token decodes into 0xFFFD.
+        if "�" in bigram:
+            bigram = prev_text + text
+
+        # Handle whitespace between tokens.
+        if prev_text + text not in (bigram, " " + bigram):
+            text = " " + text
+
+        return text
 
     def top_distribution(self, token, logprob, top_tokens, top_logprobs):
         """Collect log probabilities of the most likely tokens."""
