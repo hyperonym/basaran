@@ -3,11 +3,12 @@ FROM nvcr.io/nvidia/pytorch:22.08-py3
 # Create app directory
 WORKDIR /app
 
+# Install app dependencies
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
 # Bundle app source
 COPY . .
-
-# Install app dependencies
-RUN pip install -U pip && pip install -r requirements.txt
 
 # Expose ports
 EXPOSE 80
