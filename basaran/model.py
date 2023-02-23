@@ -1,8 +1,9 @@
-import choice
+"""
+A text generation model with stream decoding.
+"""
 import copy
-import huggingface_hub
-import torch
 
+import torch
 from transformers import (
     AutoModelForCausalLM,
     AutoModelForSeq2SeqLM,
@@ -13,9 +14,11 @@ from transformers import (
     TopPLogitsWarper,
 )
 
+from .choice import map_choice
 
-class Model:
-    """Model wraps around a language model to provide stream decoding."""
+
+class StreamModel:
+    """StreamModel wraps around a language model to provide stream decoding."""
 
     def __init__(self, model, tokenizer):
         super().__init__()
@@ -36,7 +39,7 @@ class Model:
     ):
         """Create a completion stream for the provided prompt."""
         if isinstance(prompt, str):
-            input_ids = self.encode(prompt)
+            input_ids = self.tokenize(prompt)
         elif isinstance(prompt, torch.Tensor) and prompt.dim() == 1:
             input_ids = prompt
         else:
@@ -58,12 +61,12 @@ class Model:
         for token in input_ids:
             text = self.decode(token, prev_tokens[0], prev_texts[0])
             if logprobs > 0:
-                dist = self.top_distribution(token, 0, [], [])
+                samples = self.top_distribution(token, 0, [], [])
             else:
-                dist = (None, None, None)
+                samples = (None, None, None)
             for i in range(n):
                 if echo:
-                    yield choice.map(text, i, *dist, text_offsets[i])
+                    yield map_choice(text, i, *samples, text_offsets[i], None)
                 text_offsets[i] += len(text)
                 prev_tokens[i] = token
                 if text:
@@ -91,11 +94,11 @@ class Model:
                 logprob = token_logprobs[i]
                 text = self.decode(token, prev_tokens[i], prev_texts[i])
                 if logprobs > 0:
-                    dist = self.top_distribution(
+                    samples = self.top_distribution(
                         token, logprob, top_tokens[i], top_logprobs[i]
                     )
                 else:
-                    dist = (None, None, None)
+                    samples = (None, None, None)
 
                 # Check if the sequence has finished.
                 if status[i] == 0:
@@ -107,14 +110,14 @@ class Model:
                 if status[i] != 1:
                     finished[i] = True
 
-                yield choice.map(text, i, *dist, text_offsets[i], finish)
+                yield map_choice(text, i, *samples, text_offsets[i], finish)
                 text_offsets[i] += len(text)
                 prev_tokens[i] = token
                 if text:
                     prev_texts[i] = text
 
-    def encode(self, text):
-        """Encode a string into a tensor of token IDs."""
+    def tokenize(self, text):
+        """Tokenize a string into a tensor of token IDs."""
         batch = self.tokenizer.encode(text, return_tensors="pt")
         return batch[0].to(self.device)
 
@@ -314,14 +317,9 @@ class Model:
                 break
 
 
-def download_snapshot(repo_id, cache_dir):
-    """Download a snapshot of the specified model to the cache directory."""
-    huggingface_hub.snapshot_download(repo_id, cache_dir=cache_dir)
-
-
-def load_model(name_or_path, cache_dir, load_in_8bit):
-    """Load and initialize a model from local files."""
-    kwargs = {"cache_dir": cache_dir, "local_files_only": True}
+def load_model(name_or_path, cache_dir, load_in_8bit, local_files_only):
+    """Load a text generation model and make it stream-able."""
+    kwargs = {"cache_dir": cache_dir, "local_files_only": local_files_only}
     tokenizer = AutoTokenizer.from_pretrained(name_or_path, **kwargs)
 
     # Set device mapping and quantization options if CUDA is available.
@@ -330,13 +328,14 @@ def load_model(name_or_path, cache_dir, load_in_8bit):
         kwargs["device_map"] = "auto"
         kwargs["load_in_8bit"] = load_in_8bit
 
-    # Text generation model can be either CausalLM or Seq2SeqLM.
+    # Text generation model could be either CausalLM or Seq2SeqLM.
     try:
         model = AutoModelForCausalLM.from_pretrained(name_or_path, **kwargs)
     except ValueError:
         model = AutoModelForSeq2SeqLM.from_pretrained(name_or_path, **kwargs)
-    finally:
-        if not model.can_generate():
-            raise TypeError(f"{name_or_path} is not a text generation model")
 
-    return Model(model, tokenizer)
+    # CausalLM or Seq2SeqLM might not be a text generation model.
+    if not model.can_generate():
+        raise TypeError(f"{name_or_path} is not a text generation model")
+
+    return StreamModel(model, tokenizer)

@@ -1,4 +1,9 @@
-def map(
+"""
+Functions for creating and merging choice objects.
+"""
+
+
+def map_choice(
     text,
     index,
     token=None,
@@ -7,13 +12,15 @@ def map(
     text_offset=None,
     finish_reason=None,
 ):
-    """Create a choice object from predictions."""
+    """Create a choice object from model outputs."""
     choice = {
         "text": text,
         "index": index,
         "logprobs": None,
         "finish_reason": finish_reason,
     }
+
+    # Include log probabilities of the selected and most likely tokens.
     if (
         token is not None
         and token_logprob is not None
@@ -26,12 +33,13 @@ def map(
             "top_logprobs": [top_logprobs],
             "text_offset": [text_offset],
         }
+
     return choice
 
 
-def reduce(choices):
+def reduce_choice(choices):
     """Merge a list of choices into a single choice object."""
-    text_buffer = []
+    buffer = []
     index = 0
     finish_reason = None
     tokens = []
@@ -41,7 +49,7 @@ def reduce(choices):
 
     # All choice objects are expected to have the same shape.
     for choice in choices:
-        text_buffer.append(choice["text"])
+        buffer.append(choice["text"])
         index = choice["index"]
         finish_reason = choice["finish_reason"]
         logprobs = choice["logprobs"]
@@ -51,9 +59,9 @@ def reduce(choices):
             top_logprobs += logprobs["top_logprobs"]
             text_offset += logprobs["text_offset"]
 
-    # Create reduced object based on the last seen index and finish reason.
+    # Create reduced object with the last seen index and finish reason.
     reduced = {
-        "text": "".join(text_buffer),
+        "text": "".join(buffer),
         "index": index,
         "logprobs": None,
         "finish_reason": finish_reason,
