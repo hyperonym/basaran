@@ -15,6 +15,7 @@ from transformers import (
 )
 
 from .choice import map_choice
+from .decoder import StreamDecoder
 
 
 class StreamModel:
@@ -51,26 +52,25 @@ class StreamModel:
         n = max(n, 1)
         logprobs = max(logprobs, 0)
 
-        # Keep track of sequence status and offsets.
+        # Keep track of sequence status.
         finished = [False] * n
-        text_offsets = [0] * n
-        prev_tokens = [-1] * n
-        prev_texts = [""] * n
+
+        # Create decoder for each sequence.
+        decoders = []
+        for i in range(n):
+            decoders.append(StreamDecoder(self.tokenizer))
 
         # Echo prompt tokens.
         for token in input_ids:
-            text = self.decode(token, prev_tokens[0], prev_texts[0])
             if logprobs > 0:
                 samples = self.top_distribution(token, 0, [], [])
             else:
                 samples = (None, None, None)
             for i in range(n):
+                text = decoders[i].decode(token)
+                offset = decoders[i].start
                 if echo:
-                    yield map_choice(text, i, *samples, text_offsets[i], None)
-                text_offsets[i] += len(text)
-                prev_tokens[i] = token
-                if text:
-                    prev_texts[i] = text
+                    yield map_choice(text, i, *samples, offset, None)
 
         # Yield predicted tokens.
         for (
@@ -90,12 +90,12 @@ class StreamModel:
             for i in range(n):
                 if finished[i]:
                     continue
-                token = tokens[i]
-                logprob = token_logprobs[i]
-                text = self.decode(token, prev_tokens[i], prev_texts[i])
                 if logprobs > 0:
                     samples = self.top_distribution(
-                        token, logprob, top_tokens[i], top_logprobs[i]
+                        token=tokens[i],
+                        logprob=token_logprobs[i],
+                        top_tokens=top_tokens[i],
+                        top_logprobs=top_logprobs[i],
                     )
                 else:
                     samples = (None, None, None)
@@ -110,40 +110,14 @@ class StreamModel:
                 if status[i] != 1:
                     finished[i] = True
 
-                yield map_choice(text, i, *samples, text_offsets[i], finish)
-                text_offsets[i] += len(text)
-                prev_tokens[i] = token
-                if text:
-                    prev_texts[i] = text
+                text = decoders[i].decode(tokens[i])
+                offset = decoders[i].start
+                yield map_choice(text, i, *samples, offset, finish)
 
     def tokenize(self, text):
         """Tokenize a string into a tensor of token IDs."""
         batch = self.tokenizer.encode(text, return_tensors="pt")
         return batch[0].to(self.device)
-
-    def decode(self, token, prev_token, prev_text):
-        """Decode token to string while handling surrogates and whitespace."""
-        text = self.tokenizer.decode(token, skip_special_tokens=True)
-        if prev_token < 0:
-            return "" if text == "�" else text
-
-        # Decode the current token together with the previous one.
-        bigram = [prev_token, token]
-        bigram = self.tokenizer.decode(bigram, skip_special_tokens=True)
-
-        # Handle replacement characters (0xFFFD).
-        if text == "�":
-            return "" if "�" in bigram else bigram
-
-        # Update bigram if the previous token decodes into 0xFFFD.
-        if "�" in bigram:
-            bigram = prev_text + text
-
-        # Handle whitespace between tokens.
-        if prev_text + text not in (bigram, " " + bigram):
-            text = " " + text
-
-        return text
 
     def top_distribution(self, token, logprob, top_tokens, top_logprobs):
         """Collect log probabilities of the most likely tokens."""
