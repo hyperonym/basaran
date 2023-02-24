@@ -1,6 +1,6 @@
 accelerate~=0.16.0
 bitsandbytes~=0.37.0
-flask==2.2.1
+flask==2.2.3
 huggingface-hub~=0.12.1
 pytest==6.2.5
 torch<=1.13.1
