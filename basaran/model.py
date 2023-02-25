@@ -4,6 +4,7 @@ A text generation model with stream decoding.
 import copy
 
 import torch
+from tenacity import retry, stop_after_attempt, wait_fixed
 from transformers import (
     AutoModelForCausalLM,
     AutoModelForSeq2SeqLM,
@@ -172,6 +173,12 @@ class StreamModel:
 
         return processor
 
+    @retry(stop=stop_after_attempt(5), wait=wait_fixed(1))
+    def infer(self, model_fn, **kwargs):
+        """Call a model function in inference mode with auto retrying."""
+        with torch.inference_mode():
+            return model_fn(**kwargs)
+
     def generate(self, input_ids, logprobs=0, **kwargs):
         """Generate a stream of predicted tokens using the language model."""
 
@@ -211,8 +218,8 @@ class StreamModel:
             encoder_kwargs.pop("use_cache", None)
             encoder_kwargs["input_ids"] = input_ids
             encoder_kwargs["return_dict"] = True
-            with torch.inference_mode():
-                kwargs["encoder_outputs"] = encoder(**encoder_kwargs)
+            encoder_outputs = self.infer(encoder, **encoder_kwargs)
+            kwargs["encoder_outputs"] = encoder_outputs
 
             # Reinitialize inputs for the decoder.
             decoder_start_token_id = config.decoder_start_token_id
@@ -233,13 +240,13 @@ class StreamModel:
             inputs = self.model.prepare_inputs_for_generation(
                 input_ids, **kwargs
             )  # noqa: E501
-            with torch.inference_mode():
-                outputs = self.model(
-                    **inputs,
-                    return_dict=True,
-                    output_attentions=False,
-                    output_hidden_states=False,
-                )
+            outputs = self.infer(
+                self.model,
+                **inputs,
+                return_dict=True,
+                output_attentions=False,
+                output_hidden_states=False,
+            )
 
             # Pre-process the probability distribution of the next tokens.
             logits = outputs.logits[:, -1, :]
