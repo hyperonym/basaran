@@ -3,6 +3,8 @@ Configurations and general functions for serving models.
 """
 import os
 
+import torch
+
 
 def is_true(value):
     """Convert from string to boolean."""
@@ -34,3 +36,10 @@ COMPLETION_MAX_TOKENS = int(os.getenv("COMPLETION_MAX_TOKENS", "4096"))
 COMPLETION_MAX_N = int(os.getenv("COMPLETION_MAX_N", "5"))
 COMPLETION_MAX_LOGPROBS = int(os.getenv("COMPLETION_MAX_LOGPROBS", "5"))
 COMPLETION_MAX_INTERVAL = int(os.getenv("COMPLETION_MAX_INTERVAL", "50"))
+
+# CUDA-related arguments:
+CUDA_MEMORY_FRACTION = float(os.getenv("CUDA_MEMORY_FRACTION", "1.0"))
+
+# Set memory fraction for the process if specified.
+if torch.cuda.is_available() and CUDA_MEMORY_FRACTION < 1:
+    torch.cuda.set_per_process_memory_fraction(CUDA_MEMORY_FRACTION)
