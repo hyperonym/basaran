@@ -263,13 +263,13 @@ class StreamModel:
                 tokens = torch.multinomial(probs, num_samples=1)
 
             # Collect log probabilities of the selected tokens.
-            token_logprobs = torch.gather(probs, 1, tokens).detach()
+            token_logprobs = torch.gather(probs, 1, tokens)
             token_logprobs = torch.log(token_logprobs).squeeze(1)
             tokens = tokens.squeeze(1)
 
             # Collect log probabilities of the most likely tokens.
             top_logprobs, top_tokens = probs.topk(logprobs)
-            top_logprobs = torch.log(top_logprobs.detach())
+            top_logprobs = torch.log(top_logprobs)
 
             # Finished sequences should have their next token be a padding.
             if pad_token_id is not None:
@@ -292,7 +292,7 @@ class StreamModel:
                 unfinished = unfinished.mul(not_eos.long())
 
             # Set status to -1 if exceeded the max length.
-            status = unfinished.clone().detach()
+            status = unfinished.clone()
             if input_ids.shape[-1] - input_length >= config.max_new_tokens:
                 status = 0 - status
 
