@@ -264,12 +264,12 @@ class StreamModel:
 
             # Collect log probabilities of the selected tokens.
             token_logprobs = torch.gather(probs, 1, tokens)
-            token_logprobs = torch.log(token_logprobs).squeeze(1)
+            token_logprobs = torch.log(token_logprobs + 1e-7).squeeze(1)
             tokens = tokens.squeeze(1)
 
             # Collect log probabilities of the most likely tokens.
             top_logprobs, top_tokens = probs.topk(logprobs)
-            top_logprobs = torch.log(top_logprobs)
+            top_logprobs = torch.log(top_logprobs + 1e-7)
 
             # Finished sequences should have their next token be a padding.
             if pad_token_id is not None:
