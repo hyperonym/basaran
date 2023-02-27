@@ -1,0 +1,277 @@
+html,
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.pg {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.pg-header {
+    border-bottom: 1px solid rgb(230, 230, 230);
+    flex-grow: 0;
+    padding: 16px;
+}
+
+.pg-title {
+    font-size: 18px;
+    line-height: 24px;
+    margin: 0;
+    padding: 0;
+}
+
+.pg-body {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+.pg-left {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.pg-prompt {
+    font-size: 16px;
+    line-height: 24px;
+    min-height: 72px;
+    outline: 0 solid transparent;
+    overflow-wrap: anywhere;
+    padding: 16px;
+    white-space: normal;
+    word-wrap: anywhere;
+}
+
+.pg-prompt:empty:before {
+    color: rgb(210, 210, 210);
+    content: attr(placeholder);
+}
+
+.pg-actions {
+    align-items: center;
+    border-bottom: 1px solid rgb(230, 230, 230);
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: flex-start;
+    padding: 16px;
+}
+
+.pg-button {
+    background: rgb(240, 240, 240);
+    border-radius: 4px;
+    border: none;
+    color: rgb(100, 100, 100);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 8px;
+    transition: background-color 0.3s;
+}
+
+.pg-button:hover {
+    background: rgb(230, 230, 230);
+}
+
+.pg-button:active {
+    background: rgb(220, 220, 220);
+}
+
+.pg-submit {
+    color: white;
+    background: rgb(70, 120, 220);
+}
+
+.pg-submit:hover {
+    background: rgb(60, 110, 210);
+}
+
+.pg-submit:active {
+    background: rgb(50, 100, 200);
+}
+
+.pg-outputs {
+    padding: 16px;
+}
+
+.pg-completion {
+    font-size: 16px;
+    line-height: 24px;
+    overflow-wrap: anywhere;
+    padding-bottom: 16px;
+    white-space: normal;
+    word-wrap: anywhere;
+}
+
+.pg-completion:not(:last-child) {
+    border-bottom: 1px solid rgb(230, 230, 230);
+    margin-bottom: 16px;
+}
+
+.pg-completion span {
+    padding: 2px 0;
+}
+
+.pg-completion::before {
+    color: rgb(70, 120, 220);
+    content: "Completion " attr(data-index);
+    display: block;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.pg-completion[data-finish=none]::after {
+    animation: blink 0.8s infinite;
+    color: rgb(70, 120, 220);
+    content: "|";
+}
+
+.pg-completion[data-finish=length]::after {
+    background-color: rgb(255, 100, 100);
+    border-radius: 4px;
+    color: white;
+    content: "length";
+    font-size: 0.6em;
+    margin-left: 4px;
+    padding: 2px 4px;
+}
+
+@keyframes blink {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.pg-right {
+    border-left: 1px solid rgb(230, 230, 230);
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0;
+    min-width: 250px;
+    width: 250px;
+}
+
+@media(max-width: 600px) {
+    .pg-right {
+        display: none;
+    }
+}
+
+.pg-options {
+    border-bottom: 1px solid rgb(230, 230, 230);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+}
+
+.pg-option {
+    display: flex;
+    flex-direction: column;
+}
+
+.pg-option-tuple {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.pg-option-label {
+    flex-grow: 1;
+    font-size: 14px;
+}
+
+.pg-option-number-input {
+    border-radius: 4px;
+    border: 1px solid rgba(230, 230, 230, 0);
+    flex-grow: 0;
+    font-size: 14px;
+    outline: none;
+    padding: 4px;
+    text-align: right;
+    transition: border-color 0.3s;
+    width: 40px;
+}
+
+.pg-option-number-input:hover {
+    border: 1px solid rgb(230, 230, 230);
+}
+
+.pg-option-number-input:focus {
+    border: 1px solid rgb(220, 220, 220);
+}
+
+.pg-option-boolean-input {
+    appearance: none;
+    background-color: rgba(70, 120, 220, 0);
+    border-radius: 4px;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px rgb(230, 230, 230);
+    height: 18px;
+    width: 18px;
+}
+
+.pg-option-boolean-input:checked {
+    background-color: rgb(70, 120, 220);
+}
+
+.pg-option-extra {
+    display: flex;
+    flex-direction: column;
+}
+
+.pg-option-number-range {
+    appearance: none;
+    padding: 8px 0;
+}
+
+.pg-option-number-range::-webkit-slider-thumb {
+    appearance: none;
+    background-color: white;
+    border-radius: 7px;
+    border: 2px solid rgb(70, 120, 220);
+    box-shadow: none;
+    cursor: grab;
+    height: 14px;
+    margin-top: -5px;
+    width: 14px;
+}
+
+.pg-option-number-range::-moz-range-thumb {
+    appearance: none;
+    background-color: white;
+    border-radius: 7px;
+    border: 2px solid rgb(70, 120, 220);
+    box-shadow: none;
+    cursor: grab;
+    height: 10px;
+    width: 10px;
+}
+
+.pg-option-number-range::-webkit-slider-runnable-track {
+    appearance: none;
+    background-color: rgb(240, 240, 240);
+    border-radius: 4px;
+    height: 4px;
+}
+
+.pg-option-number-range::-moz-range-track {
+    appearance: none;
+    background-color: rgb(240, 240, 240);
+    border-radius: 4px;
+    height: 4px;
+}
+
+.pg-error {
+    color: red;
+    font-size: 16px;
+}

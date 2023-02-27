@@ -6,7 +6,7 @@ import secrets
 import time
 
 import waitress
-from flask import Flask, Response, abort, jsonify, request
+from flask import Flask, Response, abort, jsonify, render_template, request
 
 from . import is_true
 from .choice import reduce_choice
@@ -71,6 +71,12 @@ def parse_options(schema):
             options[key] = dtype(payload[key])
 
     return options
+
+
+@app.route("/")
+def hello():
+    """Render model playground."""
+    return render_template("playground.html", model=SERVER_MODEL_NAME)
 
 
 @app.route("/v1/models")

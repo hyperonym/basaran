@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ model }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='playground.css') }}">
+</head>
+
+<body>
+    <div class="pg">
+        <div class="pg-header">
+            <h4 class="pg-title">{{ model }}</h4>
+        </div>
+        <div class="pg-body">
+            <div class="pg-left">
+                <div class="pg-inputs">
+                    <div class="pg-prompt" role="textbox" placeholder="Enter prompt here"
+                        contenteditable="plaintext-only"></div>
+                </div>
+                <div class="pg-actions">
+                    <button class="pg-button pg-submit">Submit</button>
+                    <button class="pg-button pg-clear-prompt">Clear prompt</button>
+                    <button class="pg-button pg-clear-completions">Clear completions</button>
+                </div>
+                <div class="pg-outputs"></div>
+            </div>
+            <div class="pg-right">
+                <div class="pg-options"></div>
+                <div class="pg-probabilities"></div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='playground.js') }}"></script>
+</body>
+
+</html>
