@@ -96,7 +96,7 @@ def create_completion():
         "min_tokens": int,
         "max_tokens": int,
         "temperature": float,
-        "top_p": int,
+        "top_p": float,
         "n": int,
         "stream": bool,
         "logprobs": int,
