@@ -1,4 +1,4 @@
-FROM hyperonym/basaran:0.6.0
+FROM hyperonym/basaran:0.7.0
 
 # Set working directory
 WORKDIR /app
