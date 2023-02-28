@@ -150,6 +150,9 @@ class Completion {
             this.completions.push(completion);
         }
 
+        let highlight = options.highlight === true;
+        delete options.highlight;
+
         let params = [
             "prompt=" + encodeURIComponent(prompt),
             "stream=true",
@@ -199,10 +202,12 @@ class Completion {
                     let span = createChild(completion, "span");
                     let prob = Math.exp(logprobs.token_logprobs[i]);
                     span.textContent = text;
-                    span.setAttribute("style", `background-color: rgba(70, 120, 220, ${0.25 * prob})`);
                     span.addEventListener("click", () => {
                         this.inspector.inspect(info);
                     });
+                    if (highlight) {
+                        span.setAttribute("style", `background-color: rgba(70, 120, 220, ${0.5 * prob})`);
+                    }
                 }
             });
         });
@@ -221,7 +226,43 @@ class Inspector {
         this.container = container;
     }
     inspect(info) {
-        // TODO(peakji): implement probability inspection.
+        this.clear();
+
+        let top = [];
+        for (let token in info.top_logprobs) {
+            top.push({
+                "token": token,
+                "prob": Math.min(Math.exp(info.top_logprobs[token]), 1.0)
+            });
+        }
+
+        top.sort((a, b) => b.prob - a.prob).forEach(x => {
+            let sample = createChild(this.container, "div");
+            sample.classList.add("pg-sample");
+
+            let tuple = createChild(sample, "div");
+            tuple.classList.add("pg-sample-tuple");
+
+            let text = createChild(tuple, "div");
+            text.classList.add("pg-sample-text");
+            text.textContent = x.token;
+
+            let probability = createChild(tuple, "div");
+            probability.classList.add("pg-sample-probability");
+            probability.textContent = (x.prob * 100).toFixed(2) + "%";
+
+            if (x.token == info.token) {
+                text.classList.add("pg-highlight-text");
+                probability.classList.add("pg-highlight-text");
+            }
+
+            let bar = createChild(sample, "div");
+            bar.classList.add("pg-sample-bar");
+
+            let fill = createChild(bar, "div");
+            fill.classList.add("pg-sample-bar-fill");
+            fill.setAttribute("style", `width:${x.prob * 100}%;`);
+        });
     }
     clear() {
         this.container.replaceChildren();
@@ -231,15 +272,16 @@ class Inspector {
 (function () {
     let fields = [
         new Field("temperature", "Temperature", "number", 0.7, new Bound(0, 1, 0.01)),
-        new Field("top_p", "Top P", "number", 0.6, new Bound(0, 1, 0.01)),
+        new Field("top_p", "Top P", "number", 0.9, new Bound(0, 1, 0.01)),
         new Field("max_tokens", "Maximum length", "number", 256, new Bound(1, 4000, 1)),
         new Field("min_tokens", "Minimum length", "number", 1, new Bound(1, 500, 1)),
         new Field("n", "Number of completions", "number", 1, new Bound(1, 5, 1)),
-        new Field("echo", "Echo prompt tokens", "boolean", false)
+        new Field("echo", "Echo prompt tokens", "boolean", false),
+        new Field("highlight", "Token highlighting", "boolean", false)
     ];
 
     let handles = new Handles(fields, document.querySelector(".pg-options"));
-    let inspector = new Inspector(document.querySelector(".pg-probabilities"));
+    let inspector = new Inspector(document.querySelector(".pg-inspector"));
 
     let prompt = document.querySelector(".pg-prompt");
     let outputs = document.querySelector(".pg-outputs");
@@ -250,7 +292,8 @@ class Inspector {
             completion.clear();
             inspector.clear();
         }
-        completion = new Completion(prompt.textContent.trim(), handles.options, inspector, outputs);
+        // Use innerText instead of textContent to preserve whitespace.
+        completion = new Completion(prompt.innerText.trim(), handles.options, inspector, outputs);
     });
 
     document.querySelector(".pg-clear-prompt").addEventListener("click", () => {

@@ -44,7 +44,7 @@ body {
     outline: 0 solid transparent;
     overflow-wrap: anywhere;
     padding: 16px;
-    white-space: normal;
+    white-space: pre-wrap;
     word-wrap: anywhere;
 }
 
@@ -104,7 +104,7 @@ body {
     line-height: 24px;
     overflow-wrap: anywhere;
     padding-bottom: 16px;
-    white-space: normal;
+    white-space: pre-wrap;
     word-wrap: anywhere;
 }
 
@@ -135,8 +135,7 @@ body {
     background-color: rgb(255, 100, 100);
     border-radius: 4px;
     color: white;
-    content: "length";
-    font-size: 0.6em;
+    content: "max";
     margin-left: 4px;
     padding: 2px 4px;
 }
@@ -231,7 +230,6 @@ body {
 
 .pg-option-number-range {
     appearance: none;
-    padding: 8px 0;
 }
 
 .pg-option-number-range::-webkit-slider-thumb {
@@ -262,6 +260,7 @@ body {
     background-color: rgb(240, 240, 240);
     border-radius: 4px;
     height: 4px;
+    margin: 8px 0;
 }
 
 .pg-option-number-range::-moz-range-track {
@@ -274,4 +273,52 @@ body {
 .pg-error {
     color: red;
     font-size: 16px;
+}
+
+.pg-inspector {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+}
+
+.pg-sample {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pg-sample-tuple {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+}
+
+.pg-sample-text {
+    flex-grow: 1;
+    font-size: 14px;
+    overflow: hidden;
+}
+
+.pg-sample-probability {
+    color: rgb(100, 100, 100);
+    flex-grow: 0;
+    font-size: 12px;
+    text-align: right;
+    width: 50px;
+}
+
+.pg-sample-bar {
+    height: 4px;
+    background-color: rgb(240, 240, 240);
+}
+
+.pg-sample-bar-fill {
+    height: 4px;
+    background-color: rgb(70, 120, 220);
+}
+
+.pg-highlight-text {
+    color: rgb(70, 120, 220) !important;
 }
