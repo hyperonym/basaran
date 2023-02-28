@@ -176,6 +176,8 @@ class StreamModel:
     @retry(stop=stop_after_attempt(5), wait=wait_fixed(1))
     def infer(self, model_fn, **kwargs):
         """Call a model function in inference mode with auto retrying."""
+        # This is a temporary workaround for bitsandbytes #162:
+        # https://github.com/TimDettmers/bitsandbytes/issues/162
         with torch.inference_mode():
             return model_fn(**kwargs)
 
