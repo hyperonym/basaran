@@ -32,3 +32,8 @@ github-packages:
 .PHONY: github-release
 github-release: changelog
 	@gh release create v$(VERSION) -F dist/changelog.md -t v$(VERSION)
+
+.PHONY: lint
+lint:
+	@flake8 basaran/ --count --select=E9,F63,F7,F82 --show-source --statistics
+	@flake8 basaran/ --count --exit-zero --max-complexity=10 --max-line-length=80 --statistics
