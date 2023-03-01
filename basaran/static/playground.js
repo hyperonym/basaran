@@ -272,7 +272,7 @@ class Inspector {
 (function () {
     let fields = [
         new Field("temperature", "Temperature", "number", 0.7, new Bound(0, 1, 0.01)),
-        new Field("top_p", "Top P", "number", 0.9, new Bound(0, 1, 0.01)),
+        new Field("top_p", "Top P", "number", 0.95, new Bound(0, 1, 0.01)),
         new Field("max_tokens", "Maximum length", "number", 256, new Bound(1, 4000, 1)),
         new Field("min_tokens", "Minimum length", "number", 1, new Bound(1, 500, 1)),
         new Field("n", "Number of completions", "number", 1, new Bound(1, 5, 1)),
