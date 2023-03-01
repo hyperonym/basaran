@@ -15,7 +15,7 @@ changelog:
 
 .PHONY: clean
 clean:
-	@rm -rf dist/
+	@rm -rf dist/ .pytest_cache
 
 .PHONY: docker-hub
 docker-hub:
@@ -37,3 +37,7 @@ github-release: changelog
 lint:
 	@flake8 basaran/ --count --select=E9,F63,F7,F82 --show-source --statistics
 	@flake8 basaran/ --count --exit-zero --max-complexity=10 --max-line-length=80 --statistics
+
+.PHONY: test
+test:
+	@python -m pytest
