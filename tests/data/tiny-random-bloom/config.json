@@ -1,0 +1,39 @@
+{
+  "apply_residual_connection_post_layernorm": false,
+  "architectures": [
+    "BloomForCausalLM"
+  ],
+  "attention_dropout": 0.1,
+  "bos_token_id": 1,
+  "dtype": "float32",
+  "eos_token_id": 2,
+  "gradient_checkpointing": false,
+  "hidden_dropout": 0.1,
+  "hidden_size": 32,
+  "id2label": {
+    "0": "LABEL_0",
+    "1": "LABEL_1",
+    "2": "LABEL_2"
+  },
+  "initializer_range": 0.02,
+  "is_decoder": true,
+  "label2id": {
+    "LABEL_0": 0,
+    "LABEL_1": 1,
+    "LABEL_2": 2
+  },
+  "layer_norm_epsilon": 1e-05,
+  "model_type": "bloom",
+  "n_head": 4,
+  "n_layer": 5,
+  "n_positions": 512,
+  "pad_token_id": 3,
+  "pretraining_tp": 1,
+  "seq_length": 7,
+  "slow_but_exact": true,
+  "torch_dtype": "float32",
+  "transformers_version": "4.25.0.dev0",
+  "type_vocab_size": 16,
+  "use_cache": true,
+  "vocab_size": 1024
+}

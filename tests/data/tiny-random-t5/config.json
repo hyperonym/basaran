@@ -1,0 +1,29 @@
+{
+  "architectures": [
+    "T5ForConditionalGeneration"
+  ],
+  "bos_token_id": 0,
+  "d_ff": 37,
+  "d_kv": 8,
+  "d_model": 32,
+  "decoder_start_token_id": 0,
+  "dense_act_fn": "relu",
+  "dropout_rate": 0.1,
+  "eos_token_id": 1,
+  "feed_forward_proj": "relu",
+  "initializer_factor": 0.002,
+  "is_encoder_decoder": true,
+  "is_gated_act": false,
+  "layer_norm_epsilon": 1e-06,
+  "model_type": "t5",
+  "num_decoder_layers": 5,
+  "num_heads": 4,
+  "num_layers": 5,
+  "pad_token_id": 0,
+  "relative_attention_max_distance": 128,
+  "relative_attention_num_buckets": 8,
+  "torch_dtype": "float32",
+  "transformers_version": "4.25.0.dev0",
+  "use_cache": true,
+  "vocab_size": 1302
+}
