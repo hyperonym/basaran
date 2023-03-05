@@ -2,6 +2,8 @@
 
 Basaran is an open source alternative to the [OpenAI text completion API](https://platform.openai.com/docs/api-reference/completions/create). It provides a compatible streaming API for your [🤗 Transformers](https://huggingface.co/docs/transformers/index)-based [text generation models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads).
 
+https://user-images.githubusercontent.com/219051/222939435-894b93cd-b2f2-483b-9bdf-0c1788cf397a.mov
+
 ## Roadmap
 
 - [x] API
