@@ -1,6 +1,7 @@
 # Basaran
 
 [![Python](https://github.com/hyperonym/basaran/actions/workflows/python.yml/badge.svg)](https://github.com/hyperonym/basaran/actions/workflows/python.yml)
+[![codecov](https://codecov.io/gh/hyperonym/basaran/branch/master/graph/badge.svg?token=8HUSH6HSAN)](https://codecov.io/gh/hyperonym/basaran)
 [![Status](https://img.shields.io/badge/status-beta-blue)](https://github.com/hyperonym/basaran)
 
 Basaran is an open source alternative to the [OpenAI text completion API](https://platform.openai.com/docs/api-reference/completions/create). It provides a compatible streaming API for your [🤗 Transformers](https://huggingface.co/docs/transformers/index)-based [text generation models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads), which makes it possible to replace OpenAI's services [without changing a single line of code](https://github.com/hyperonym/basaran/blob/master/README.md#openai-client-library).
