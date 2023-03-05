@@ -206,7 +206,7 @@ class StreamModel:
             pad_token_id = eos_token_id[0]
 
         # Generate from eos if no input is specified.
-        if input_ids.shape[-1] == 0:
+        if input_length == 0:
             input_ids = input_ids.new_ones((batch_size, 1)).long()
             if eos_token_id is not None:
                 input_ids = input_ids * eos_token_id[0]
