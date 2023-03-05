@@ -14,7 +14,7 @@ The key features of Basaran are:
 * Post-processors for handling surrogates and whitespace.
 * Stream back partial progress using [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format).
 * Compatible with OpenAI API and client libraries.
-* Comes with a cool web-based playground!
+* Comes with a fancy web-based playground!
 
 <img src="https://github.com/hyperonym/basaran/blob/master/docs/assets/playground.gif?raw=true" width="640">
 
