@@ -16,7 +16,7 @@ changelog:
 .PHONY: clean
 clean:
 	@find . -type f -name "*.py[co]" -delete && find . -type d -name "__pycache__" -delete
-	@rm -rf dist/ .pytest_cache/
+	@rm -rf dist/ .pytest_cache/ htmlcov/ .coverage
 
 .PHONY: docker-hub
 docker-hub:
@@ -38,3 +38,8 @@ lint:
 .PHONY: test
 test:
 	@python -m pytest
+
+.PHONY: test-coverage
+test-coverage:
+	@coverage run -m pytest
+	@coverage report
