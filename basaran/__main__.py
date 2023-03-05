@@ -74,7 +74,7 @@ def parse_options(schema):
 
 
 @app.route("/")
-def hello():
+def render_playground():
     """Render model playground."""
     return render_template("playground.html", model=SERVER_MODEL_NAME)
 
