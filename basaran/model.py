@@ -63,7 +63,7 @@ class StreamModel:
 
         # Echo prompt tokens if required.
         for token in input_ids:
-            samples = self.sample(token, 0, [], []) if logprobs > 0 else {}
+            samples = self._sample(token, 0, [], []) if logprobs > 0 else {}
             for i in range(n):
                 text = decoders[i].decode(token)
                 offset = decoders[i].start
@@ -96,7 +96,7 @@ class StreamModel:
 
                 # Collect samples of the most likely tokens if required.
                 samples = (
-                    self.sample(
+                    self._sample(
                         token=tokens[i],
                         token_logprob=token_logprobs[i],
                         top_tokens=top_tokens[i],
@@ -117,12 +117,7 @@ class StreamModel:
                     **samples,
                 )
 
-    def tokenize(self, text):
-        """Tokenize a string into a tensor of token IDs."""
-        batch = self.tokenizer.encode(text, return_tensors="pt")
-        return batch[0].to(self.device)
-
-    def sample(self, token, token_logprob, top_tokens, top_logprobs):
+    def _sample(self, token, token_logprob, top_tokens, top_logprobs):
         """Sample log probabilities of the most likely tokens."""
         token = self.tokenizer.decode(token)
         top_tokens = self.tokenizer.batch_decode(top_tokens)
@@ -141,7 +136,7 @@ class StreamModel:
             "top_logprobs": top_logprobs,
         }
 
-    def logits_processor(self, config, input_length):
+    def _logits_processor(self, config, input_length):
         """Set up logits processor based on the generation config."""
         processor = LogitsProcessorList()
 
@@ -174,12 +169,17 @@ class StreamModel:
         return processor
 
     @retry(stop=stop_after_attempt(5), wait=wait_fixed(1))
-    def infer(self, model_fn, **kwargs):
+    def _infer(self, model_fn, **kwargs):
         """Call a model function in inference mode with auto retrying."""
         # This is a temporary workaround for bitsandbytes #162:
         # https://github.com/TimDettmers/bitsandbytes/issues/162
         with torch.inference_mode():
             return model_fn(**kwargs)
+
+    def tokenize(self, text):
+        """Tokenize a string into a tensor of token IDs."""
+        batch = self.tokenizer.encode(text, return_tensors="pt")
+        return batch[0].to(self.device)
 
     def generate(self, input_ids, logprobs=0, **kwargs):
         """Generate a stream of predicted tokens using the language model."""
@@ -220,7 +220,7 @@ class StreamModel:
             encoder_kwargs.pop("use_cache", None)
             encoder_kwargs["input_ids"] = input_ids
             encoder_kwargs["return_dict"] = True
-            encoder_outputs = self.infer(encoder, **encoder_kwargs)
+            encoder_outputs = self._infer(encoder, **encoder_kwargs)
             kwargs["encoder_outputs"] = encoder_outputs
 
             # Reinitialize inputs for the decoder.
@@ -232,7 +232,7 @@ class StreamModel:
             input_length = 1
 
         # Set up logits processor.
-        processor = self.logits_processor(config, input_length)
+        processor = self._logits_processor(config, input_length)
 
         # Keep track of which sequences are already finished.
         unfinished = input_ids.new_ones(batch_size)
@@ -242,7 +242,7 @@ class StreamModel:
             inputs = self.model.prepare_inputs_for_generation(
                 input_ids, **kwargs
             )  # noqa: E501
-            outputs = self.infer(
+            outputs = self._infer(
                 self.model,
                 **inputs,
                 return_dict=True,
