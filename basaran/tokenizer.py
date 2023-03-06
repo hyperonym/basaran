@@ -3,8 +3,8 @@ A stateful tokenizer for stream decoding.
 """
 
 
-class StreamDecoder:
-    """StreamDecoder wraps around a tokenizer to support stream decoding."""
+class StreamTokenizer:
+    """StreamTokenizer wraps around a tokenizer to support stream decoding."""
 
     def __init__(self, tokenizer):
         super().__init__()

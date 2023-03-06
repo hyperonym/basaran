@@ -16,7 +16,7 @@ from transformers import (
 )
 
 from .choice import map_choice
-from .decoder import StreamDecoder
+from .tokenizer import StreamTokenizer
 
 
 class StreamModel:
@@ -56,17 +56,17 @@ class StreamModel:
         # Keep track of the finish reason of each sequence.
         finish_reasons = [None] * n
 
-        # Create stateful decoder for each sequence.
-        decoders = []
+        # Create stateful detokenizers for each sequence.
+        detokenizers = []
         for i in range(n):
-            decoders.append(StreamDecoder(self.tokenizer))
+            detokenizers.append(StreamTokenizer(self.tokenizer))
 
         # Echo prompt tokens if required.
         for token in input_ids:
             samples = self._sample(token, 0, [], []) if logprobs > 0 else {}
             for i in range(n):
-                text = decoders[i].decode(token)
-                offset = decoders[i].start
+                text = detokenizers[i].decode(token)
+                offset = detokenizers[i].start
                 if echo:
                     yield map_choice(text, i, text_offset=offset, **samples)
 
@@ -107,8 +107,8 @@ class StreamModel:
                 )
 
                 # Yield predicted tokens.
-                text = decoders[i].decode(tokens[i])
-                offset = decoders[i].start
+                text = detokenizers[i].decode(tokens[i])
+                offset = detokenizers[i].start
                 yield map_choice(
                     text,
                     i,
