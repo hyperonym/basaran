@@ -4,15 +4,17 @@
 [![codecov](https://codecov.io/gh/hyperonym/basaran/branch/master/graph/badge.svg?token=8HUSH6HSAN)](https://codecov.io/gh/hyperonym/basaran)
 [![Status](https://img.shields.io/badge/status-beta-blue)](https://github.com/hyperonym/basaran)
 
-Basaran is an open source alternative to the [OpenAI text completion API](https://platform.openai.com/docs/api-reference/completions/create). It provides a compatible streaming API for your [🤗 Transformers](https://huggingface.co/docs/transformers/index)-based [text generation models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads), which makes it possible to replace OpenAI's services [without changing a single line of code](https://github.com/hyperonym/basaran/blob/master/README.md#openai-client-library).
+Basaran is an open-source alternative to the [OpenAI text completion API](https://platform.openai.com/docs/api-reference/completions/create). It provides a compatible streaming API for your [Hugging Face Transformers](https://huggingface.co/docs/transformers/index)-based [text generation models](https://huggingface.co/models?pipeline_tag=text-generation).
+
+The open source community will eventually witness the [Stable Diffusion](https://stability.ai/blog/stable-diffusion-public-release) moment for large language models (LLMs), and Basaran is committed to becoming the [Stable Diffusion web UI](https://github.com/AUTOMATIC1111/stable-diffusion-webui) for LLMs. Basaran allows you to replace OpenAI's service with the latest open-source model to power your application [without modifying a single line of code](https://github.com/hyperonym/basaran/blob/master/README.md#openai-client-library).
 
 The key features of Basaran are:
 
-* Stream decoding using various sampling strategies.
+* Stream generation using various decoding strategies.
 * Support both decoder-only and encoder-decoder models.
+* Detokenizer that handles surrogates and whitespace.
 * Multi-GPU support with optional 8-bit quantization.
-* Detokenizers for handling surrogates and whitespace.
-* Stream back partial progress using [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format).
+* Real-time partial progress using [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format).
 * Compatible with OpenAI API and client libraries.
 * Comes with a fancy web-based playground!
 
