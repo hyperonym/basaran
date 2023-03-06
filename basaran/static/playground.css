@@ -85,8 +85,8 @@ body {
 }
 
 .pg-submit {
-    color: white;
     background: rgb(70, 120, 220);
+    color: white;
 }
 
 .pg-submit:hover {
@@ -99,6 +99,11 @@ body {
 
 .pg-outputs {
     padding: 16px;
+}
+
+.pg-error {
+    color: red;
+    font-size: 16px;
 }
 
 .pg-completion {
@@ -146,6 +151,7 @@ body {
     from {
         opacity: 1;
     }
+
     to {
         opacity: 0;
     }
@@ -272,11 +278,6 @@ body {
     height: 4px;
 }
 
-.pg-error {
-    color: red;
-    font-size: 16px;
-}
-
 .pg-inspector {
     display: flex;
     flex-direction: column;
@@ -291,10 +292,10 @@ body {
 }
 
 .pg-sample-tuple {
+    align-items: center;
     display: flex;
     flex-direction: row;
     gap: 16px;
-    align-items: center;
 }
 
 .pg-sample-text {
@@ -312,13 +313,13 @@ body {
 }
 
 .pg-sample-bar {
-    height: 4px;
     background-color: rgb(240, 240, 240);
+    height: 4px;
 }
 
 .pg-sample-bar-fill {
-    height: 4px;
     background-color: rgb(70, 120, 220);
+    height: 4px;
 }
 
 .pg-highlight-text {

@@ -13,12 +13,8 @@ class Bound {
     clamp(x) {
         let d = 1 / this.step;
         x = Math.round(x * d) / d;
-        if (x < this.min) {
-            x = this.min;
-        }
-        if (x > this.max) {
-            x = this.max;
-        }
+        x = Math.max(x, this.min);
+        x = Math.min(x, this.max);
         return x;
     }
 }
@@ -128,7 +124,7 @@ class Handles {
             }
         });
     }
-    get options() {
+    options() {
         let options = {};
         this.handles.forEach(handle => {
             options[handle.field.key] = handle.value;
@@ -194,9 +190,9 @@ class Completion {
                     }
 
                     let info = {
-                        "token": logprobs.tokens[i],
-                        "token_logprob": logprobs.token_logprobs[i],
-                        "top_logprobs": logprobs.top_logprobs[i]
+                        token: logprobs.tokens[i],
+                        token_logprob: logprobs.token_logprobs[i],
+                        top_logprobs: logprobs.top_logprobs[i]
                     };
 
                     let span = createChild(completion, "span");
@@ -212,11 +208,8 @@ class Completion {
             });
         });
     }
-    close() {
-        this.eventSource.close();
-    }
     clear() {
-        this.close();
+        this.eventSource.close();
         this.container.replaceChildren();
     }
 }
@@ -231,8 +224,8 @@ class Inspector {
         let top = [];
         for (let token in info.top_logprobs) {
             top.push({
-                "token": token,
-                "prob": Math.min(Math.exp(info.top_logprobs[token]), 1.0)
+                token: token,
+                prob: Math.min(Math.exp(info.top_logprobs[token]), 1.0)
             });
         }
 
@@ -292,8 +285,7 @@ class Inspector {
             completion.clear();
             inspector.clear();
         }
-        // Use innerText instead of textContent to preserve whitespace.
-        completion = new Completion(prompt.innerText.trim(), handles.options, inspector, outputs);
+        completion = new Completion(prompt.innerText, handles.options(), inspector, outputs);
     });
 
     document.querySelector(".pg-clear-prompt").addEventListener("click", () => {
