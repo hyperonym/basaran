@@ -4,17 +4,19 @@
 [![codecov](https://codecov.io/gh/hyperonym/basaran/branch/master/graph/badge.svg?token=8HUSH6HSAN)](https://codecov.io/gh/hyperonym/basaran)
 [![Status](https://img.shields.io/badge/status-beta-blue)](https://github.com/hyperonym/basaran)
 
-Basaran is an open source alternative to the [OpenAI text completion API](https://platform.openai.com/docs/api-reference/completions/create). It provides a compatible streaming API for your [🤗 Transformers](https://huggingface.co/docs/transformers/index)-based [text generation models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads), which makes it possible to replace OpenAI's services [without changing a single line of code](https://github.com/hyperonym/basaran/blob/master/README.md#openai-client-library).
+Basaran is an open-source alternative to the [OpenAI text completion API](https://platform.openai.com/docs/api-reference/completions/create). It provides a compatible streaming API for your [Hugging Face Transformers](https://huggingface.co/docs/transformers/index)-based [text generation models](https://huggingface.co/models?pipeline_tag=text-generation).
+
+The open source community will eventually witness the [Stable Diffusion](https://stability.ai/blog/stable-diffusion-public-release) moment for large language models (LLMs), and Basaran is committed to becoming the [Stable Diffusion web UI](https://github.com/AUTOMATIC1111/stable-diffusion-webui) for LLMs. Basaran allows you to replace OpenAI's service with the latest open-source model to power your application [without modifying a single line of code](https://github.com/hyperonym/basaran/blob/master/README.md#openai-client-library).
 
 The key features of Basaran are:
 
-* Stream decoding using various sampling strategies.
-* Support both encoder-decoder and decoder-only models.
+* Stream generation using various decoding strategies.
+* Support both decoder-only and encoder-decoder models.
+* Detokenizer that handles surrogates and whitespace.
 * Multi-GPU support with optional 8-bit quantization.
-* Post-processors for handling surrogates and whitespace.
-* Stream back partial progress using [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format).
+* Real-time partial progress using [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format).
 * Compatible with OpenAI API and client libraries.
-* Comes with a cool web-based playground!
+* Comes with a fancy web-based playground!
 
 <img src="https://github.com/hyperonym/basaran/blob/master/docs/assets/playground.gif?raw=true" width="640">
 
@@ -24,13 +26,13 @@ The key features of Basaran are:
 
 Docker images are available on [Docker Hub](https://hub.docker.com/r/hyperonym/basaran/tags) and [GitHub Packages](https://github.com/orgs/hyperonym/packages?repo_name=basaran).
 
-For GPU acceleration, you will need to install the [NVIDIA Driver](https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html) and [NVIDIA Container Runtime](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html).
+For GPU acceleration, you also need to install the [NVIDIA Driver](https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html) and [NVIDIA Container Runtime](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html). Basaran's image already comes with related libraries such as CUDA and cuDNN, so there is no need to install them manually.
 
-Basaran's images can be used in three ways:
+Basaran's image can be used in three ways:
 
-* **Run directly**: use `MODEL="user/repo"` to download a model from Hugging Face Hub on start.
-* **Bundled**: create a new Dockerfile to [preload a public model](https://github.com/hyperonym/basaran/blob/master/deployments/bundles/bloomz-560m.Dockerfile) or [bundle a private model](https://github.com/hyperonym/basaran/blob/master/deployments/bundles/private.Dockerfile).
-* **Bind mount**: mount a local model into the container and set `MODEL` to the corresponding path.
+* **Run directly**: By specifying the `MODEL="user/repo"` environment variable, the corresponding model can be downloaded from Hugging Face Hub during the first startup.
+* **Pre-packaging**: Create a new Dockerfile to [preload a public model](https://github.com/hyperonym/basaran/blob/master/deployments/bundles/bloomz-560m.Dockerfile) or [bundle a private model](https://github.com/hyperonym/basaran/blob/master/deployments/bundles/private.Dockerfile).
+* **Bind mount**: Mount a model from the local file system into the container and point the `MODEL` environment variable to the corresponding path.
 
 ### Basic Usage
 
@@ -38,15 +40,12 @@ Basaran's images can be used in three ways:
 
 Basaran's HTTP request and response formats are consistent with the [OpenAI API](https://platform.openai.com/docs/api-reference).
 
-Take [text completion](https://platform.openai.com/docs/api-reference/completions/create) as an example:
+Taking [text completion](https://platform.openai.com/docs/api-reference/completions/create) as an example:
 
 ```bash
 curl http://127.0.0.1/v1/completions \
     -H 'Content-Type: application/json' \
-    -d '{
-    "prompt": "once upon a time,",
-    "echo": true
-}'
+    -d '{ "prompt": "once upon a time,", "echo": true }'
 ```
 
 <details>
@@ -77,17 +76,25 @@ curl http://127.0.0.1/v1/completions \
 
 #### OpenAI Client Library
 
-If your application is using [client libraries](https://github.com/openai/openai-python) provided by OpenAI, you will only need to set the environment variable `OPENAI_API_BASE` to the corresponding endpoint of Basaran:
+If your application uses [client libraries](https://github.com/openai/openai-python) provided by OpenAI, you only need to modify the `OPENAI_API_BASE` environment variable to Basaran's corresponding endpoint:
 
 ```bash
 OPENAI_API_BASE="http://127.0.0.1/v1" python your_app.py
 ```
 
-The [examples](https://github.com/hyperonym/basaran/tree/master/examples) directory contains ready-to-run examples for using the Python library.
+The [examples](https://github.com/hyperonym/basaran/tree/master/examples) directory contains examples of using the Python library.
 
 ## Compatibility
 
-### Create Completion
+Basaran's API format is consistent with OpenAI's, with compatibility differences mainly in parameter support and response fields. The following sections provide detailed information on the compatibility of each endpoint.
+
+### Models
+
+Each Basaran process serves only one model, so the result will only contain this model.
+
+### Completions
+
+Although Basaran does not support the `model` parameter, the OpenAI client library requires this parameter to be present. Therefore, you can fill in any model name you want.
 
 | Parameter | Basaran | OpenAI | Default Value | Maximum Value |
 | --- | --- | --- | --- | --- |
