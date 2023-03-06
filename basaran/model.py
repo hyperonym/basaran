@@ -117,6 +117,14 @@ class StreamModel:
                     **samples,
                 )
 
+    @retry(stop=stop_after_attempt(5), wait=wait_fixed(1))
+    def _infer(self, model_fn, **kwargs):
+        """Call a model function in inference mode with auto retrying."""
+        # This is a temporary workaround for bitsandbytes #162:
+        # https://github.com/TimDettmers/bitsandbytes/issues/162
+        with torch.inference_mode():
+            return model_fn(**kwargs)
+
     def _sample(self, token, token_logprob, top_tokens, top_logprobs):
         """Sample log probabilities of the most likely tokens."""
         token = self.tokenizer.decode(token)
@@ -167,14 +175,6 @@ class StreamModel:
             processor.append(TopPLogitsWarper(config.top_p))
 
         return processor
-
-    @retry(stop=stop_after_attempt(5), wait=wait_fixed(1))
-    def _infer(self, model_fn, **kwargs):
-        """Call a model function in inference mode with auto retrying."""
-        # This is a temporary workaround for bitsandbytes #162:
-        # https://github.com/TimDettmers/bitsandbytes/issues/162
-        with torch.inference_mode():
-            return model_fn(**kwargs)
 
     def tokenize(self, text):
         """Tokenize a string into a tensor of token IDs."""
@@ -280,7 +280,7 @@ class StreamModel:
             # Append selected tokens to the inputs.
             input_ids = torch.cat([input_ids, tokens[:, None]], dim=-1)
 
-            # Extract past key values from model output.
+            # Extract past key values from model outputs.
             if "past_key_values" in outputs:
                 kwargs["past_key_values"] = outputs.past_key_values
             elif "mems" in outputs:
