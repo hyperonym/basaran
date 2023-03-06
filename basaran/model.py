@@ -56,7 +56,7 @@ class StreamModel:
         # Keep track of the finish reason of each sequence.
         finish_reasons = [None] * n
 
-        # Create stateful detokenizers for each sequence.
+        # Create stateful detokenizer for each sequence.
         detokenizers = []
         for i in range(n):
             detokenizers.append(StreamTokenizer(self.tokenizer))
@@ -317,13 +317,13 @@ def load_model(name_or_path, cache_dir, load_in_8bit, local_files_only):
         kwargs["device_map"] = "auto"
         kwargs["load_in_8bit"] = load_in_8bit
 
-    # Text generation model could be either CausalLM or Seq2SeqLM.
+    # Support both decoder-only and encoder-decoder models.
     try:
         model = AutoModelForCausalLM.from_pretrained(name_or_path, **kwargs)
     except ValueError:
         model = AutoModelForSeq2SeqLM.from_pretrained(name_or_path, **kwargs)
 
-    # CausalLM or Seq2SeqLM might not be a text generation model.
+    # Check if the model has text generation capabilities.
     if not model.can_generate():
         raise TypeError(f"{name_or_path} is not a text generation model")
 
