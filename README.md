@@ -11,7 +11,7 @@ The key features of Basaran are:
 * Stream decoding using various sampling strategies.
 * Support both encoder-decoder and decoder-only models.
 * Multi-GPU support with optional 8-bit quantization.
-* Post-processors for handling surrogates and whitespace.
+* Detokenizers for handling surrogates and whitespace.
 * Stream back partial progress using [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format).
 * Compatible with OpenAI API and client libraries.
 * Comes with a fancy web-based playground!
