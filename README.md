@@ -22,6 +22,18 @@ The key features of Basaran are:
 
 ## Quick Start
 
+### TL;DR
+
+Replace `user/repo` with the selected model (e.g. [`bigscience/bloomz-560m`](https://huggingface.co/bigscience/bloomz-560m)) and `X.Y.Z` with the latest version, then run:
+
+```bash
+docker run -p 80:80 -e MODEL=user/repo hyperonym/basaran:X.Y.Z
+# Playground: http://127.0.0.1/
+# API:        http://127.0.0.1/v1/completions
+```
+
+And you're good to go! 🚀
+
 ### Installation
 
 Docker images are available on [Docker Hub](https://hub.docker.com/r/hyperonym/basaran/tags) and [GitHub Packages](https://github.com/orgs/hyperonym/packages?repo_name=basaran).
