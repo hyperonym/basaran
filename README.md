@@ -46,7 +46,7 @@ For GPU acceleration, you also need to install the [NVIDIA Driver](https://docs.
 Basaran's image can be used in three ways:
 
 * **Run directly**: By specifying the `MODEL="user/repo"` environment variable, the corresponding model can be downloaded from Hugging Face Hub during the first startup.
-* **Pre-packaging**: Create a new Dockerfile to [preload a public model](https://github.com/hyperonym/basaran/blob/master/deployments/bundles/bloomz-560m.Dockerfile) or [bundle a private model](https://github.com/hyperonym/basaran/blob/master/deployments/bundles/private.Dockerfile).
+* **Bundling**: Create a new Dockerfile to [preload a public model](https://github.com/hyperonym/basaran/blob/master/deployments/bundle/bloomz-560m.Dockerfile) or [bundle a private model](https://github.com/hyperonym/basaran/blob/master/deployments/bundle/private.Dockerfile).
 * **Bind mount**: Mount a model from the local file system into the container and point the `MODEL` environment variable to the corresponding path.
 
 ### Basic Usage

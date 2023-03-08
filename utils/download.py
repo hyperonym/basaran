@@ -1,7 +1,7 @@
 """
 Use this script to download a model without loading it into memory.
 This allows memory-constrained CI/CD runners to build container images
-with large bundled models. See ../deployments/bundles/ for examples.
+with large bundled models. See ../deployments/bundle/ for examples.
 """
 import os
 import sys
