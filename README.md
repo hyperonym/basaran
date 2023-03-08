@@ -49,6 +49,8 @@ Basaran's image can be used in three ways:
 * **Bundling**: Create a new Dockerfile to [preload a public model](https://github.com/hyperonym/basaran/blob/master/deployments/bundle/bloomz-560m.Dockerfile) or [bundle a private model](https://github.com/hyperonym/basaran/blob/master/deployments/bundle/private.Dockerfile).
 * **Bind mount**: Mount a model from the local file system into the container and point the `MODEL` environment variable to the corresponding path.
 
+For the above use cases, you can find sample [Dockerfiles](https://github.com/hyperonym/basaran/tree/master/deployments/bundle) and [docker-compose files](https://github.com/hyperonym/basaran/tree/master/deployments/compose) in the [deployments directory](https://github.com/hyperonym/basaran/tree/master/deployments).
+
 ### Basic Usage
 
 #### cURL
