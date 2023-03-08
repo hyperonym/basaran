@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+    basaran:
+        image: hyperonym/basaran:0.9.0
+        restart: always
+        environment:
+            MODEL: "bigscience/bloomz-560m"
+            SERVER_MODEL_NAME: "bloomz-560m"
+            MODEL_LOAD_IN_8BIT: "true"
+            CUDA_MEMORY_FRACTION: "1.0"
+        ports:
+            - "80:80"
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                        - capabilities: [gpu]
