@@ -9,8 +9,8 @@ from basaran.tokenizer import StreamTokenizer
 class TestTokenizer:
     """Test stateful tokenizer for stream decoding."""
 
-    def test_byte_pair_encoding(self):
-        """Test with Byte-Pair-Encoding."""
+    def test_byte_level_byte_pair_encoding(self):
+        """Test with byte-level Byte-Pair-Encoding."""
         tokenizer = AutoTokenizer.from_pretrained(
             pretrained_model_name_or_path="./tests/data/tiny-random-bloom",
             local_files_only=True,
