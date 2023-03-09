@@ -24,6 +24,7 @@ from . import SERVER_IDENTITY
 from . import SERVER_CONNECTION_LIMIT
 from . import SERVER_CHANNEL_TIMEOUT
 from . import SERVER_MODEL_NAME
+from . import SERVER_NO_PLAYGROUND
 from . import COMPLETION_MAX_PROMPT
 from . import COMPLETION_MAX_TOKENS
 from . import COMPLETION_MAX_N
@@ -76,6 +77,8 @@ def parse_options(schema):
 @app.route("/")
 def render_playground():
     """Render model playground."""
+    if SERVER_NO_PLAYGROUND:
+        abort(404)
     return render_template("playground.html", model=SERVER_MODEL_NAME)
 
 
