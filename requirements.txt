@@ -1,4 +1,4 @@
-accelerate~=0.16.0
+accelerate~=0.17.0
 bitsandbytes~=0.37.0
 coverage==6.4.2
 flake8==3.7.9
