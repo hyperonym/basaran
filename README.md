@@ -6,7 +6,7 @@
 
 Basaran is an open-source alternative to the [OpenAI text completion API](https://platform.openai.com/docs/api-reference/completions/create). It provides a compatible streaming API for your [Hugging Face Transformers](https://huggingface.co/docs/transformers/index)-based [text generation models](https://huggingface.co/models?pipeline_tag=text-generation).
 
-The open source community will eventually witness the [Stable Diffusion](https://stability.ai/blog/stable-diffusion-public-release) moment for large language models (LLMs), and Basaran is committed to becoming the [Stable Diffusion web UI](https://github.com/AUTOMATIC1111/stable-diffusion-webui) for LLMs. Basaran allows you to replace OpenAI's service with the latest open-source model to power your application [without modifying a single line of code](https://github.com/hyperonym/basaran/blob/master/README.md#openai-client-library).
+The open source community will eventually witness the [Stable Diffusion](https://stability.ai/blog/stable-diffusion-public-release) moment for large language models (LLMs), and Basaran allows you to replace OpenAI's service with the latest open-source model to power your application [without modifying a single line of code](https://github.com/hyperonym/basaran/blob/master/README.md#openai-client-library).
 
 The key features of Basaran are:
 
