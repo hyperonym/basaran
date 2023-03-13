@@ -421,7 +421,7 @@ class Inspector {
             inspector.clear();
         }
         completion = new Completion(
-            prompt.innerText,
+            prompt.value,
             handles.options,
             inspector,
             outputs
@@ -434,8 +434,14 @@ class Inspector {
         }
     });
 
+    let resizePrompt = () => {
+        prompt.style.height = 0;
+        prompt.style.height = prompt.scrollHeight + "px";
+    };
+
     document.querySelector(".pg-clear-prompt").addEventListener("click", () => {
-        prompt.textContent = "";
+        prompt.value = "";
+        resizePrompt();
     });
 
     document
@@ -446,4 +452,7 @@ class Inspector {
                 inspector.clear();
             }
         });
+
+    prompt.addEventListener("input", resizePrompt);
+    resizePrompt();
 })();
