@@ -125,7 +125,7 @@ class BooleanHandle {
         input.checked = field.defaultValue;
 
         input.addEventListener("input", () => {
-            field.onSet(input.value);
+            field.onSet(input.checked);
         });
 
         this.field = field;
@@ -133,7 +133,7 @@ class BooleanHandle {
     }
 
     set(value) {
-        this.input.value = value;
+        this.input.checked = value;
     }
 
     get value() {
