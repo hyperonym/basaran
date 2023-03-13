@@ -39,6 +39,8 @@ API:        http://127.0.0.1/v1/completions
 
 ### Installation
 
+#### Using Docker (Recommended)
+
 Docker images are available on [Docker Hub](https://hub.docker.com/r/hyperonym/basaran/tags) and [GitHub Packages](https://github.com/orgs/hyperonym/packages?repo_name=basaran).
 
 For GPU acceleration, you also need to install the [NVIDIA Driver](https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html) and [NVIDIA Container Runtime](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html). Basaran's image already comes with related libraries such as CUDA and cuDNN, so there is no need to install them manually.
@@ -50,6 +52,30 @@ Basaran's image can be used in three ways:
 * **Bind mount**: Mount a model from the local file system into the container and point the `MODEL` environment variable to the corresponding path.
 
 For the above use cases, you can find sample [Dockerfiles](https://github.com/hyperonym/basaran/tree/master/deployments/bundle) and [docker-compose files](https://github.com/hyperonym/basaran/tree/master/deployments/compose) in the [deployments directory](https://github.com/hyperonym/basaran/tree/master/deployments).
+
+#### Without Docker
+
+Basaran is tested on Python 3.8+ and PyTorch 1.13. You should create a [virtual environment](https://docs.python.org/3/library/venv.html) with the version of Python you want to use, and activate it before proceeding.
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/hyperonym/basaran.git && cd basaran
+```
+
+2. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. Replace `user/repo` with the selected model and run Basaran:
+
+```bash
+MODEL=user/repo python -m basaran
+```
+
+For a complete list of environment variables, see [`__init__.py`](https://github.com/hyperonym/basaran/blob/master/basaran/__init__.py).
 
 ### Basic Usage
 
