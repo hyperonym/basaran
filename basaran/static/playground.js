@@ -20,15 +20,24 @@ class Bound {
 }
 
 class Field {
-    constructor(key, label, type, defaultValue, bound) {
+    constructor(
+        key,
+        label,
+        type,
+        defaultValue,
+        props = {},
+        onSet = () => void 0
+    ) {
         this.key = key;
         this.label = label;
         this.type = type;
         this.defaultValue = defaultValue;
-        this.bound = bound;
+        this.onSet = onSet;
+
+        Object.assign(this, props);
     }
     clamp(x) {
-        if (typeof (x) == "string") {
+        if (typeof x == "string") {
             x = parseFloat(x);
         }
         if (isNaN(x)) {
@@ -70,17 +79,29 @@ class NumberHandle {
             let x = field.clamp(input.value);
             input.value = x;
             range.value = x;
+
+            field.onSet(input.value);
         });
 
         range.addEventListener("input", () => {
             let x = field.clamp(range.value);
             input.value = x;
             range.value = x;
+
+            field.onSet(input.value);
         });
 
         this.field = field;
         this.input = input;
+        this.range = range;
     }
+
+    set(value) {
+        let x = this.field.clamp(value);
+        this.input.value = x;
+        this.range.value = x;
+    }
+
     get value() {
         return this.field.clamp(this.input.value);
     }
@@ -103,31 +124,92 @@ class BooleanHandle {
         input.setAttribute("type", "checkbox");
         input.checked = field.defaultValue;
 
+        input.addEventListener("input", () => {
+            field.onSet(input.value);
+        });
+
         this.field = field;
         this.input = input;
     }
+
+    set(value) {
+        this.input.value = value;
+    }
+
     get value() {
         return this.input.checked;
     }
 }
 
+class SelectHandle {
+    constructor(field, container) {
+        let option = createChild(container, "div");
+        option.classList.add("pg-option");
+
+        let tuple = createChild(option, "div");
+        tuple.classList.add("pg-option-tuple");
+
+        let label = createChild(tuple, "span");
+        label.classList.add("pg-option-label");
+        label.textContent = field.label;
+
+        let input = createChild(tuple, "select");
+        input.classList.add("pg-option-select-input");
+        input.value = field.defaultValue;
+
+        for (let option of field.options) {
+            let opt = createChild(input, "option");
+            opt.value = option.value;
+            opt.textContent = option.label;
+        }
+
+        input.addEventListener("input", () => {
+            field.onSet(input.value);
+        });
+
+        this.field = field;
+        this.input = input;
+    }
+
+    set(value) {
+        this.input.value = value;
+    }
+
+    get value() {
+        return this.input.value;
+    }
+}
+
 class Handles {
     constructor(fields, container) {
-        this.handles = fields.map(field => {
+        this.handles = fields.map((field) => {
             switch (field.type) {
                 case "number":
                     return new NumberHandle(field, container);
                 case "boolean":
                     return new BooleanHandle(field, container);
+                case "select":
+                    return new SelectHandle(field, container);
                 default:
                     throw new Error(`unknown field type: ${field.type}`);
             }
         });
     }
-    options() {
+
+    set(options) {
+        for (let key in options) {
+            this.handles
+                .find((handle) => handle.field.key === key)
+                ?.set(options[key]);
+        }
+    }
+
+    get options() {
         let options = {};
-        this.handles.forEach(handle => {
-            options[handle.field.key] = handle.value;
+        this.handles.forEach((handle) => {
+            if (!handle.field.noSend) {
+                options[handle.field.key] = handle.value;
+            }
         });
         return options;
     }
@@ -152,38 +234,45 @@ class Completion {
         let params = [
             "prompt=" + encodeURIComponent(prompt),
             "stream=true",
-            "logprobs=5"
+            "logprobs=5",
         ];
         for (let key in options) {
             params.push(`${key}=${options[key]}`);
         }
 
-        this.eventSource = new EventSource("/v1/completions?" + params.join("&"));
-        this.eventSource.addEventListener("error", event => {
-            this.clear();
+        this.eventSource = new EventSource(
+            "/v1/completions?" + params.join("&")
+        );
+        this.eventSource.addEventListener("error", (event) => {
+            this.stop();
             let error = createChild(container, "div");
             error.classList.add("pg-error");
-            error.textContent = "An error occurred while attempting to connect.";
+            error.textContent =
+                "An error occurred while attempting to connect.";
         });
-        this.eventSource.addEventListener("message", event => {
+        this.eventSource.addEventListener("message", (event) => {
             if (event.data == "[DONE]") {
                 this.eventSource.close();
                 return;
             }
 
             let data = JSON.parse(event.data);
-            data.choices.forEach(choice => {
+            data.choices.forEach((choice) => {
                 let completion = this.completions[choice.index];
                 let graphemes = [...choice.text];
+
                 let logprobs = choice.logprobs;
                 if (choice.finish_reason !== null) {
                     completion.dataset.finish = choice.finish_reason;
                 }
                 for (let i = 0; i < logprobs.tokens.length; i++) {
                     let text = "";
-                    let start = logprobs.text_offset[i] - logprobs.text_offset[0];
+                    let start =
+                        logprobs.text_offset[i] - logprobs.text_offset[0];
                     if (i + 1 < logprobs.tokens.length) {
-                        let end = logprobs.text_offset[i + 1] - logprobs.text_offset[0];
+                        let end =
+                            logprobs.text_offset[i + 1] -
+                            logprobs.text_offset[0];
                         text = graphemes.slice(start, end).join("");
                     } else {
                         text = graphemes.slice(start).join("");
@@ -192,7 +281,7 @@ class Completion {
                     let info = {
                         token: logprobs.tokens[i],
                         token_logprob: logprobs.token_logprobs[i],
-                        top_logprobs: logprobs.top_logprobs[i]
+                        top_logprobs: logprobs.top_logprobs[i],
                     };
 
                     let span = createChild(completion, "span");
@@ -202,14 +291,25 @@ class Completion {
                         this.inspector.inspect(info);
                     });
                     if (highlight) {
-                        span.setAttribute("style", `background-color: rgba(70, 120, 220, ${0.5 * prob})`);
+                        span.setAttribute(
+                            "style",
+                            `background-color: rgba(70, 120, 220, ${
+                                0.5 * prob
+                            })`
+                        );
                     }
                 }
             });
         });
     }
-    clear() {
+    stop() {
+        for (const completion of this.completions) {
+            completion.dataset.finish = "user";
+        }
         this.eventSource.close();
+    }
+    clear() {
+        this.stop();
         this.container.replaceChildren();
     }
 }
@@ -225,11 +325,11 @@ class Inspector {
         for (let token in info.top_logprobs) {
             top.push({
                 token: token,
-                prob: Math.min(Math.exp(info.top_logprobs[token]), 1.0)
+                prob: Math.min(Math.exp(info.top_logprobs[token]), 1.0),
             });
         }
 
-        top.sort((a, b) => b.prob - a.prob).forEach(x => {
+        top.sort((a, b) => b.prob - a.prob).forEach((x) => {
             let sample = createChild(this.container, "div");
             sample.classList.add("pg-sample");
 
@@ -262,19 +362,54 @@ class Inspector {
     }
 }
 
-(function () {
+(async function () {
+    let presets = await fetch("static/presets.json")
+        .then((res) => res.json())
+        .catch(() => []);
+
+    let onPreset = (presetId) => {
+        handles.set(presets.find((preset) => preset.id === presetId) ?? {});
+    };
+
     let fields = [
-        new Field("temperature", "Temperature", "number", 0.7, new Bound(0, 1, 0.01)),
-        new Field("top_p", "Top P", "number", 0.95, new Bound(0, 1, 0.01)),
-        new Field("max_tokens", "Maximum length", "number", 256, new Bound(1, 4000, 1)),
-        new Field("min_tokens", "Minimum length", "number", 1, new Bound(1, 500, 1)),
-        new Field("n", "Number of completions", "number", 1, new Bound(1, 5, 1)),
+        new Field(
+            "preset",
+            "Preset",
+            "select",
+            presets[0].id,
+            {
+                noSend: true,
+                options: presets.map((preset) => ({
+                    value: preset.id,
+                    label: preset.name,
+                })),
+            },
+            onPreset
+        ),
+
+        new Field("temperature", "Temperature", "number", 1, {
+            bound: new Bound(0, 2, 0.01),
+        }),
+        new Field("top_p", "Top P", "number", 1, {
+            bound: new Bound(0, 1, 0.01),
+        }),
+        new Field("max_tokens", "Maximum length", "number", 2000, {
+            bound: new Bound(1, 4000, 1),
+        }),
+        new Field("min_tokens", "Minimum length", "number", 1, {
+            bound: new Bound(1, 500, 1),
+        }),
+        new Field("n", "Number of completions", "number", 1, {
+            bound: new Bound(1, 5, 1),
+        }),
         new Field("echo", "Echo prompt tokens", "boolean", false),
-        new Field("highlight", "Token highlighting", "boolean", false)
+        new Field("highlight", "Token highlighting", "boolean", false),
     ];
 
     let handles = new Handles(fields, document.querySelector(".pg-options"));
     let inspector = new Inspector(document.querySelector(".pg-inspector"));
+
+    handles.set(presets[0]);
 
     let prompt = document.querySelector(".pg-prompt");
     let outputs = document.querySelector(".pg-outputs");
@@ -285,17 +420,30 @@ class Inspector {
             completion.clear();
             inspector.clear();
         }
-        completion = new Completion(prompt.innerText, handles.options(), inspector, outputs);
+        completion = new Completion(
+            prompt.innerText,
+            handles.options,
+            inspector,
+            outputs
+        );
+    });
+
+    document.querySelector(".pg-stop").addEventListener("click", () => {
+        if (completion !== null) {
+            completion.stop();
+        }
     });
 
     document.querySelector(".pg-clear-prompt").addEventListener("click", () => {
         prompt.textContent = "";
     });
 
-    document.querySelector(".pg-clear-completions").addEventListener("click", () => {
-        if (completion !== null) {
-            completion.clear();
-            inspector.clear();
-        }
-    });
+    document
+        .querySelector(".pg-clear-completions")
+        .addEventListener("click", () => {
+            if (completion !== null) {
+                completion.clear();
+                inspector.clear();
+            }
+        });
 })();
