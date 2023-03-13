@@ -68,12 +68,13 @@ git clone https://github.com/hyperonym/basaran.git && cd basaran
 ```bash
 pip install -r requirements.txt
 ```
-
-3. Run Basaran:
+3. Replace `user/repo` with the selected model and run Basaran:
 
 ```bash
-PORT=8000 MODEL=user/repo python -m basaran
+MODEL=user/repo python -m basaran
 ```
+
+For a complete list of environment variables, see [`__init__.py`](https://github.com/hyperonym/basaran/blob/master/basaran/__init__.py).
 
 ### Basic Usage
 
