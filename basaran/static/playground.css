@@ -38,8 +38,6 @@ body {
 }
 
 .pg-prompt {
-    -moz-user-modify: read-write-plaintext-only;
-    -webkit-user-modify: read-write-plaintext-only;
     background-color: transparent;
     border: 0;
     box-sizing: border-box;
