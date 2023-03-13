@@ -68,6 +68,7 @@ git clone https://github.com/hyperonym/basaran.git && cd basaran
 ```bash
 pip install -r requirements.txt
 ```
+
 3. Replace `user/repo` with the selected model and run Basaran:
 
 ```bash
