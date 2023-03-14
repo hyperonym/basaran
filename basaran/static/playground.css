@@ -91,6 +91,7 @@ body {
 .pg-submit {
     background: rgb(70, 120, 220);
     color: white;
+    min-width: 65px;
 }
 
 .pg-submit:hover {
@@ -98,7 +99,19 @@ body {
 }
 
 .pg-submit:active {
-    background: rgb(50, 100, 200);
+    background: rgb(30, 80, 180);
+}
+
+.pg-submit[data-state="stop"] {
+    background: rgb(255, 100, 100);
+}
+
+.pg-submit[data-state="stop"]:hover {
+    background: rgb(235, 80, 80);
+}
+
+.pg-submit[data-state="stop"]:active {
+    background: rgb(215, 60, 60);
 }
 
 .pg-outputs {
