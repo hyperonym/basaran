@@ -248,6 +248,11 @@ body {
     background-color: rgb(70, 120, 220);
 }
 
+.pg-option-select-input {
+    text-overflow: ellipsis;
+    width: 120px;
+}
+
 .pg-option-extra {
     display: flex;
     flex-direction: column;

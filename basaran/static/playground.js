@@ -397,13 +397,13 @@ class Inspector {
             onPreset
         ),
 
-        new Field("temperature", "Temperature", "number", 1, {
+        new Field("temperature", "Temperature", "number", 0.7, {
             bound: new Bound(0, 2, 0.01),
         }),
-        new Field("top_p", "Top P", "number", 1, {
+        new Field("top_p", "Top P", "number", 0.95, {
             bound: new Bound(0, 1, 0.01),
         }),
-        new Field("max_tokens", "Maximum length", "number", 2000, {
+        new Field("max_tokens", "Maximum length", "number", 256, {
             bound: new Bound(1, 4000, 1),
         }),
         new Field("min_tokens", "Minimum length", "number", 1, {
