@@ -38,15 +38,19 @@ body {
 }
 
 .pg-prompt {
-    -moz-user-modify: read-write-plaintext-only;
-    -webkit-user-modify: read-write-plaintext-only;
+    background-color: transparent;
+    border: 0;
+    box-sizing: border-box;
     font-size: 16px;
+    font-family: inherit;
     line-height: 24px;
     min-height: 72px;
     outline: 0 solid transparent;
     overflow-wrap: anywhere;
     padding: 16px;
+    resize: none;
     white-space: pre-wrap;
+    width: 100%;
     word-wrap: anywhere;
 }
 
@@ -132,13 +136,13 @@ body {
     margin-bottom: 8px;
 }
 
-.pg-completion[data-finish=none]::after {
+.pg-completion[data-finish="none"]::after {
     animation: blink 0.8s infinite;
     color: rgb(70, 120, 220);
     content: "|";
 }
 
-.pg-completion[data-finish=length]::after {
+.pg-completion[data-finish="length"]::after {
     background-color: rgb(255, 100, 100);
     border-radius: 4px;
     color: white;
@@ -166,7 +170,7 @@ body {
     width: 250px;
 }
 
-@media(max-width: 600px) {
+@media (max-width: 600px) {
     .pg-right {
         display: none;
     }
