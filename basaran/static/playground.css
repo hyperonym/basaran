@@ -48,7 +48,7 @@ body {
     outline: 0 solid transparent;
     overflow-wrap: anywhere;
     padding: 16px;
-    resize: vertical;
+    resize: none;
     white-space: pre-wrap;
     width: 100%;
     word-wrap: anywhere;
