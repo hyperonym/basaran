@@ -438,6 +438,7 @@ class Inspector {
         inspector.clear();
 
         e.target.textContent = "Stop";
+        e.target.dataset.state = "stop";
 
         completion = new Completion(
             prompt.value,
@@ -447,6 +448,7 @@ class Inspector {
         );
         completion.addEventListener("done", () => {
             e.target.textContent = "Submit";
+            e.target.dataset.state = "submit";
         });
     });
 
