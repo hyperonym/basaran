@@ -215,8 +215,10 @@ class Handles {
     }
 }
 
-class Completion {
+class Completion extends EventTarget {
     constructor(prompt, options, inspector, container) {
+        super();
+
         this.inspector = inspector;
         this.container = container;
         this.completions = [];
@@ -253,6 +255,7 @@ class Completion {
         this.eventSource.addEventListener("message", (event) => {
             if (event.data == "[DONE]") {
                 this.eventSource.close();
+                this.dispatchEvent(new CustomEvent("done"));
                 return;
             }
 
@@ -302,12 +305,19 @@ class Completion {
             });
         });
     }
+
+    get running() {
+        return this.eventSource.readyState !== EventSource.CLOSED;
+    }
+
     stop() {
         for (const completion of this.completions) {
             completion.dataset.finish = "user";
         }
         this.eventSource.close();
+        this.dispatchEvent(new CustomEvent("done"));
     }
+
     clear() {
         this.stop();
         this.container.replaceChildren();
@@ -408,30 +418,36 @@ class Inspector {
 
     let handles = new Handles(fields, document.querySelector(".pg-options"));
     let inspector = new Inspector(document.querySelector(".pg-inspector"));
+    let completion = null;
 
     handles.set(presets[0]);
 
     let prompt = document.querySelector(".pg-prompt");
     let outputs = document.querySelector(".pg-outputs");
 
-    let completion = null;
-    document.querySelector(".pg-submit").addEventListener("click", () => {
-        if (completion !== null) {
+    document.querySelector(".pg-submit").addEventListener("click", (e) => {
+        if (completion) {
+            if (completion.running) {
+                completion.stop();
+                return;
+            }
+
             completion.clear();
-            inspector.clear();
         }
+
+        inspector.clear();
+
+        e.target.textContent = "Stop";
+
         completion = new Completion(
             prompt.value,
             handles.options,
             inspector,
             outputs
         );
-    });
-
-    document.querySelector(".pg-stop").addEventListener("click", () => {
-        if (completion !== null) {
-            completion.stop();
-        }
+        completion.addEventListener("done", () => {
+            e.target.textContent = "Submit";
+        });
     });
 
     let resizePrompt = () => {
