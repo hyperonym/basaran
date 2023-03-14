@@ -60,12 +60,12 @@ class TestDecoderOnlyModel(TestModel):
 
     def test_stochastic(self):
         """Test completion using stochastic decoding."""
-        model = load_model("./tests/data/tiny-random-bloom", "", False, True)
+        model = load_model("./tests/data/tiny-random-bloom")
         self.assert_stochastic(model)
 
     def test_deterministic(self):
         """Test completion using deterministic decoding."""
-        model = load_model("./tests/data/tiny-random-bloom", "", False, True)
+        model = load_model("./tests/data/tiny-random-bloom")
         self.assert_deterministic(model)
 
 
@@ -74,10 +74,10 @@ class TestEncoderDecoderModel(TestModel):
 
     def test_stochastic(self):
         """Test completion using stochastic decoding."""
-        model = load_model("./tests/data/tiny-random-t5", "", False, True)
+        model = load_model("./tests/data/tiny-random-t5")
         self.assert_stochastic(model)
 
     def test_deterministic(self):
         """Test completion using deterministic decoding."""
-        model = load_model("./tests/data/tiny-random-t5", "", False, True)
+        model = load_model("./tests/data/tiny-random-t5")
         self.assert_deterministic(model)
