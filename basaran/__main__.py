@@ -19,6 +19,7 @@ from . import PORT
 from . import MODEL_CACHE_DIR
 from . import MODEL_LOAD_IN_8BIT
 from . import MODEL_LOCAL_FILES_ONLY
+from . import MODEL_TRUST_REMOTE_CODE
 from . import SERVER_THREADS
 from . import SERVER_IDENTITY
 from . import SERVER_CONNECTION_LIMIT
@@ -37,6 +38,7 @@ stream_model = load_model(
     cache_dir=MODEL_CACHE_DIR,
     load_in_8bit=MODEL_LOAD_IN_8BIT,
     local_files_only=MODEL_LOCAL_FILES_ONLY,
+    trust_remote_code=MODEL_TRUST_REMOTE_CODE,
 )
 
 # Create and configure application.

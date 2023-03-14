@@ -19,8 +19,9 @@ PORT = int(os.getenv("PORT", "80"))
 
 # Model-related arguments:
 MODEL_CACHE_DIR = os.getenv("MODEL_CACHE_DIR", "models")
-MODEL_LOAD_IN_8BIT = is_true(os.getenv("MODEL_LOAD_IN_8BIT", "false"))
-MODEL_LOCAL_FILES_ONLY = is_true(os.getenv("MODEL_LOCAL_FILES_ONLY", "false"))
+MODEL_LOAD_IN_8BIT = is_true(os.getenv("MODEL_LOAD_IN_8BIT", ""))
+MODEL_LOCAL_FILES_ONLY = is_true(os.getenv("MODEL_LOCAL_FILES_ONLY", ""))
+MODEL_TRUST_REMOTE_CODE = is_true(os.getenv("MODEL_TRUST_REMOTE_CODE", ""))
 
 # Server-related arguments:
 # https://docs.pylonsproject.org/projects/waitress/en/stable/arguments.html
@@ -29,7 +30,7 @@ SERVER_IDENTITY = os.getenv("SERVER_IDENTITY", "basaran")
 SERVER_CONNECTION_LIMIT = int(os.getenv("SERVER_CONNECTION_LIMIT", "512"))
 SERVER_CHANNEL_TIMEOUT = int(os.getenv("SERVER_CHANNEL_TIMEOUT", "300"))
 SERVER_MODEL_NAME = os.getenv("SERVER_MODEL_NAME", "") or MODEL
-SERVER_NO_PLAYGROUND = is_true(os.getenv("SERVER_NO_PLAYGROUND", "false"))
+SERVER_NO_PLAYGROUND = is_true(os.getenv("SERVER_NO_PLAYGROUND", ""))
 
 # Completion-related arguments:
 COMPLETION_MAX_PROMPT = int(os.getenv("COMPLETION_MAX_PROMPT", "4096"))
