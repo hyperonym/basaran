@@ -2,121 +2,34 @@
     {
         "id": "default",
         "name": "Default",
-        "temperature": 0,
-        "top_k": 50,
-        "top_p": 1,
-        "typical_p": 1,
-        "penalty_alpha": 0,
-        "repetition_penalty": 1
-    },
-    {
-        "id": "nai_best_guess",
-        "name": "NovelAI - Best Guess",
-        "temperature": 0.8,
-        "top_k": 100,
-        "top_p": 0.9,
-        "typical_p": 1,
-        "penalty_alpha": 0,
-        "repetition_penalty": 1.15
-    },
-    {
-        "id": "nai_decadence",
-        "name": "NovelAI - Decadence",
-        "temperature": 2,
-        "top_k": 100,
-        "top_p": 1,
-        "typical_p": 0.97,
-        "penalty_alpha": 0,
-        "repetition_penalty": 1
-    },
-    {
-        "id": "nai_genesis",
-        "name": "NovelAI - Genesis",
-        "temperature": 0.63,
-        "top_k": 100,
-        "top_p": 0.98,
-        "typical_p": 1,
-        "penalty_alpha": 0,
-        "repetition_penalty": 1.05
-    },
-    {
-        "id": "nai_lycaenidae",
-        "name": "NovelAI - Lycaenidae",
-        "temperature": 2,
-        "top_k": 12,
-        "top_p": 0.85,
-        "typical_p": 1,
-        "penalty_alpha": 0,
-        "repetition_penalty": 1.05
-    },
-    {
-        "id": "nai_ouroboros",
-        "name": "NovelAI - Ouroboros",
-        "temperature": 1.07,
-        "top_k": 100,
-        "top_p": 1,
-        "typical_p": 1,
-        "penalty_alpha": 0,
-        "repetition_penalty": 1.05
-    },
-    {
-        "id": "nai_pleasing_results",
-        "name": "NovelAI - Pleasing Results",
-        "temperature": 0.44,
-        "top_k": 100,
-        "top_p": 1,
-        "typical_p": 1,
-        "penalty_alpha": 0,
-        "repetition_penalty": 1.15
-    },
-    {
-        "id": "nai_sphinx_moth",
-        "name": "NovelAI - Sphinx Moth",
-        "temperature": 2,
-        "top_k": 30,
-        "top_p": 0.18,
-        "typical_p": 1,
-        "penalty_alpha": 0,
-        "repetition_penalty": 1.15
-    },
-    {
-        "id": "nai_storywriter",
-        "name": "NovelAI - Storywriter",
-        "temperature": 0.72,
-        "top_k": 50,
-        "top_p": 0.73,
-        "typical_p": 1,
-        "penalty_alpha": 0,
-        "repetition_penalty": 1.1
-    },
-    {
-        "id": "pygmalion",
-        "name": "Pygmalion",
-        "temperature": 0.5,
-        "top_k": 100,
-        "top_p": 0.9,
-        "typical_p": 1,
-        "penalty_alpha": 0,
-        "repetition_penalty": 1.1
-    },
-    {
-        "id": "kobold_godlike",
-        "name": "Kobold - Godlike",
         "temperature": 0.7,
-        "top_k": 100,
-        "top_p": 0.5,
-        "typical_p": 0.19,
-        "penalty_alpha": 0,
-        "repetition_penalty": 1.1
+        "top_p": 0.95,
+        "max_tokens": 256,
+        "min_tokens": 1,
+        "n": 1,
+        "echo": false,
+        "highlight": false
     },
     {
-        "id": "kobold_liminal_drift",
-        "name": "Kobold - Liminal Drift",
-        "temperature": 0.66,
-        "top_k": 100,
-        "top_p": 1,
-        "typical_p": 0.6,
-        "penalty_alpha": 0,
-        "repetition_penalty": 1.1
+        "id": "deterministic",
+        "name": "Deterministic",
+        "temperature": 0,
+        "top_p": 0,
+        "max_tokens": 100,
+        "min_tokens": 1,
+        "n": 1,
+        "echo": false,
+        "highlight": true
+    },
+    {
+        "id": "stochastic",
+        "name": "Stochastic",
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "max_tokens": 256,
+        "min_tokens": 1,
+        "n": 3,
+        "echo": false,
+        "highlight": true
     }
 ]
