@@ -307,7 +307,11 @@ class StreamModel:
 
 
 def load_model(
-    name_or_path, cache_dir, load_in_8bit, local_files_only, trust_remote_code
+    name_or_path,
+    cache_dir=None,
+    load_in_8bit=False,
+    local_files_only=False,
+    trust_remote_code=False,
 ):
     """Load a text generation model and make it stream-able."""
     kwargs = {
