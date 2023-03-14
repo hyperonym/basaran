@@ -2,12 +2,12 @@
     {
         "id": "default",
         "name": "Default",
-        "temperature": 0.7,
-        "top_k": 40,
+        "temperature": 0,
+        "top_k": 50,
         "top_p": 1,
         "typical_p": 1,
         "penalty_alpha": 0,
-        "repetition_penalty": 1.17
+        "repetition_penalty": 1
     },
     {
         "id": "nai_best_guess",
