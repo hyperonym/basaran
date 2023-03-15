@@ -99,7 +99,7 @@ body {
 }
 
 .pg-submit:active {
-    background: rgb(30, 80, 180);
+    background: rgb(50, 100, 200);
 }
 
 .pg-submit[data-state="stop"] {
