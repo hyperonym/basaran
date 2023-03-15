@@ -312,6 +312,7 @@ def load_model(
     load_in_8bit=False,
     local_files_only=False,
     trust_remote_code=False,
+    half_precision=False,
 ):
     """Load a text generation model and make it stream-able."""
     kwargs = {
@@ -332,6 +333,10 @@ def load_model(
         model = AutoModelForCausalLM.from_pretrained(name_or_path, **kwargs)
     except ValueError:
         model = AutoModelForSeq2SeqLM.from_pretrained(name_or_path, **kwargs)
+
+    # Cast all parameters to half-precision if required.
+    if half_precision:
+        model = model.half()
 
     # Check if the model has text generation capabilities.
     if not model.can_generate():

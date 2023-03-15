@@ -22,6 +22,7 @@ MODEL_CACHE_DIR = os.getenv("MODEL_CACHE_DIR", "models")
 MODEL_LOAD_IN_8BIT = is_true(os.getenv("MODEL_LOAD_IN_8BIT", ""))
 MODEL_LOCAL_FILES_ONLY = is_true(os.getenv("MODEL_LOCAL_FILES_ONLY", ""))
 MODEL_TRUST_REMOTE_CODE = is_true(os.getenv("MODEL_TRUST_REMOTE_CODE", ""))
+MODEL_HALF_PRECISION = is_true(os.getenv("MODEL_HALF_PRECISION", ""))
 
 # Server-related arguments:
 # https://docs.pylonsproject.org/projects/waitress/en/stable/arguments.html
