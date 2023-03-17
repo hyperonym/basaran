@@ -308,6 +308,7 @@ class StreamModel:
 
 def load_model(
     name_or_path,
+    revision=None,
     cache_dir=None,
     load_in_8bit=False,
     local_files_only=False,
@@ -316,10 +317,13 @@ def load_model(
 ):
     """Load a text generation model and make it stream-able."""
     kwargs = {
-        "cache_dir": cache_dir,
         "local_files_only": local_files_only,
         "trust_remote_code": trust_remote_code,
     }
+    if revision:
+        kwargs["revision"] = revision
+    if cache_dir:
+        kwargs["cache_dir"] = cache_dir
     tokenizer = AutoTokenizer.from_pretrained(name_or_path, **kwargs)
 
     # Set device mapping and quantization options if CUDA is available.
