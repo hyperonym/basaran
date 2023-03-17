@@ -16,6 +16,7 @@ from .model import load_model
 from . import MODEL
 from . import HOST
 from . import PORT
+from . import MODEL_REVISION
 from . import MODEL_CACHE_DIR
 from . import MODEL_LOAD_IN_8BIT
 from . import MODEL_LOCAL_FILES_ONLY
@@ -36,6 +37,7 @@ from . import COMPLETION_MAX_INTERVAL
 # Load the language model to be served.
 stream_model = load_model(
     name_or_path=MODEL,
+    revision=MODEL_REVISION,
     cache_dir=MODEL_CACHE_DIR,
     load_in_8bit=MODEL_LOAD_IN_8BIT,
     local_files_only=MODEL_LOCAL_FILES_ONLY,
