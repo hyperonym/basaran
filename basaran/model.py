@@ -328,6 +328,10 @@ def load_model(
         kwargs["device_map"] = "auto"
         kwargs["load_in_8bit"] = load_in_8bit
 
+        # Override the dtype to float16 as required by bitsandbytes.
+        if load_in_8bit:
+            kwargs["torch_dtype"] = torch.float16
+
     # Support both decoder-only and encoder-decoder models.
     try:
         model = AutoModelForCausalLM.from_pretrained(name_or_path, **kwargs)
