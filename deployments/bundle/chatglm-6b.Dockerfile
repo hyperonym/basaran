@@ -7,7 +7,7 @@ WORKDIR /app
 RUN pip install icetk cpm_kernels
 
 # Download the model to be bundled
-RUN python utils/download.py THUDM/chatglm-6b
+RUN MODEL_REVISION=refs/pr/7 python utils/download.py THUDM/chatglm-6b
 
 # Provide default environment variables
 ENV MODEL="THUDM/chatglm-6b"
