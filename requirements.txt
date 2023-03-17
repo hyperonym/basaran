@@ -1,6 +1,6 @@
 accelerate~=0.17.1
 bitsandbytes~=0.37.1
-coverage==6.4.2
+coverage==7.2.2
 flake8==3.7.9
 flask==2.2.1
 huggingface-hub~=0.13.2
