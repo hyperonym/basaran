@@ -16,7 +16,7 @@ changelog:
 .PHONY: clean
 clean:
 	@find . -type f -name "*.py[co]" -delete && find . -type d -name "__pycache__" -delete
-	@rm -rf dist/ .pytest_cache/ htmlcov/ .coverage
+	@rm -rf .coverage .pytest_cache/ *.egg-info/ build/ dist/ htmlcov/
 
 .PHONY: docker-hub
 docker-hub:

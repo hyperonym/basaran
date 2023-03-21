@@ -1,0 +1,28 @@
+name: TestPyPI
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  publish:
+    name: publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: "pip"
+      - name: Build source tarball and binary wheel
+        run: |
+          pip install -U pip
+          pip install build
+          python -m build --sdist --wheel --outdir dist/ .
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
