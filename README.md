@@ -77,6 +77,27 @@ MODEL=user/repo python -m basaran
 
 For a complete list of environment variables, see [`__init__.py`](https://github.com/hyperonym/basaran/blob/master/basaran/__init__.py).
 
+#### Using as a Python Library
+
+Basaran is also available as a library on [PyPI](https://pypi.org/project/basaran/). To use it programmatically, install it with `pip`:
+
+```bash
+pip install basaran
+```
+
+Use the `load_model` function to load the specified model and generate streaming output by calling the model:
+
+```python
+from basaran.model import load_model
+
+model = load_model("user/repo")
+
+for choice in model("once upon a time"):
+    print(choice)
+```
+
+The [examples](https://github.com/hyperonym/basaran/tree/master/examples) directory contains examples of [using Basaran as a library](https://github.com/hyperonym/basaran/blob/master/examples/basaran-python-library/main.py).
+
 ### Basic Usage
 
 #### cURL
@@ -125,7 +146,7 @@ If your application uses [client libraries](https://github.com/openai/openai-pyt
 OPENAI_API_BASE="http://127.0.0.1/v1" python your_app.py
 ```
 
-The [examples](https://github.com/hyperonym/basaran/tree/master/examples) directory contains examples of using the Python library.
+The [examples](https://github.com/hyperonym/basaran/tree/master/examples) directory contains examples of [using the OpenAI Python library](https://github.com/hyperonym/basaran/blob/master/examples/openai-python-library/main.py).
 
 ## Compatibility
 
