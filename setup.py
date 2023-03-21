@@ -1,3 +1,6 @@
+"""
+Script for building and distributing Python packages.
+"""
 from setuptools import setup, find_packages
 
 VERSION = "0.12.0"
