@@ -7,5 +7,5 @@ huggingface-hub~=0.13.3
 pytest==6.2.5
 tenacity~=8.2.2
 torch<=1.13.1
-transformers[sentencepiece]~=4.27.1
+transformers[sentencepiece]~=4.27.2
 waitress~=2.1.2
