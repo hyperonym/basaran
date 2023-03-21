@@ -9,6 +9,9 @@ setup(
     name="basaran",
     version=VERSION,
     description="Open-source alternative to the OpenAI text completion API",
+    long_description="Basaran is an open-source alternative to the OpenAI "
+    "text completion API. It provides a compatible streaming API for your "
+    "Hugging Face Transformers-based text generation models.",
     author="Hyperonym",
     author_email="prompt@hyperonym.org",
     license="MIT",
