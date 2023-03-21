@@ -1,7 +1,7 @@
 """
 Script for building and distributing Python packages.
 """
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 VERSION = "0.12.0"
 
@@ -15,7 +15,7 @@ setup(
     packages=find_packages(),
     python_requires=">=3.8.0",
     install_requires=["tenacity", "torch", "transformers"],
-    keywords=["transformer", "huggingface", "openai", "nlp", "gpt", "api"],
+    keywords=["api", "gpt", "huggingface", "nlp", "openai", "transformer"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
