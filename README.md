@@ -79,19 +79,25 @@ For a complete list of environment variables, see [`__init__.py`](https://github
 
 #### Using as a Python Library
 
-Basaran is also available as a library on [PyPI](https://pypi.org/project/basaran/). To use it programmatically, install it with `pip`:
+Basaran is also available as a library on [PyPI](https://pypi.org/project/basaran/) for programmatic usage.
+
+1. Install with `pip`:
 
 ```bash
 pip install basaran
 ```
 
-Use the `load_model` function to load the specified model and generate streaming output by calling the model:
+2. Use the `load_model` function to load a model:
 
 ```python
 from basaran.model import load_model
 
 model = load_model("user/repo")
+```
 
+3. Generate streaming output by calling the model:
+
+```python
 for choice in model("once upon a time"):
     print(choice)
 ```
