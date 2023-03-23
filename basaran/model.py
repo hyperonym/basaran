@@ -60,15 +60,6 @@ class StreamModel:
         for i in range(n):
             detokenizers.append(StreamTokenizer(self.tokenizer))
 
-        # Echo prompt tokens if required.
-        for token in input_ids:
-            samples = self._sample(token, 0, [], []) if logprobs > 0 else {}
-            for i in range(n):
-                text = detokenizers[i].decode(token)
-                offset = detokenizers[i].start
-                if echo:
-                    yield map_choice(text, i, text_offset=offset, **samples)
-
         # Generate completion tokens.
         for (
             tokens,
@@ -76,6 +67,7 @@ class StreamModel:
             top_tokens,
             top_logprobs,
             status,
+            prompt_logprobs
         ) in self.generate(
             input_ids[None, :].repeat(n, 1),
             logprobs=logprobs,
@@ -84,6 +76,22 @@ class StreamModel:
             temperature=temperature,
             top_p=top_p,
         ):
+
+            # Echo prompt tokens if required.
+            if echo and prompt_logprobs is not None:
+
+                for i, token in enumerate(input_ids):
+
+                    token_logprob = 0
+                    if i > 0:
+                        token_logprob = prompt_logprobs[i-1,0]
+
+                    samples = self._sample(token, token_logprob, [], []) if logprobs > 0 else {}
+                    for i in range(n):
+                        text = detokenizers[i].decode(token)
+                        offset = detokenizers[i].start
+                        yield map_choice(text, i, text_offset=offset, **samples)
+
             for i in range(n):
                 # Check and update the finish status of the sequence.
                 if finish_reasons[i]:
@@ -228,6 +236,9 @@ class StreamModel:
         # Keep track of which sequences are already finished.
         unfinished = input_ids.new_ones(batch_size)
 
+        # track generation steps
+        generation_step = 0
+
         # Start auto-regressive generation.
         while True:
             inputs = self.model.prepare_inputs_for_generation(
@@ -240,6 +251,28 @@ class StreamModel:
                     output_attentions=False,
                     output_hidden_states=False,
                 )
+
+            # get logprobs for prompt (only required at first step)
+            prompt_logprobs = None
+            if generation_step == 0:
+                input_probs = torch.nn.functional.softmax(outputs.logits[:, :-1, :], dim=-1)
+                input_logprobs = []
+
+                # collect probs across batch, starting with second token
+                for sequence_index in range(input_ids.size(1)-1):
+                    probs_at_step = input_probs[:, sequence_index, :]
+                    batch_probs = []
+                    for batch_id in range(input_ids.size(0)):
+                        probs_for_b = probs_at_step[batch_id]
+                        token_prob = probs_for_b[input_ids[batch_id, sequence_index+1]]
+                        batch_probs.append(token_prob)
+                    input_logprobs.append(batch_probs)
+
+                # convert to logprobs
+                prompt_logprobs = torch.log(torch.tensor(input_logprobs).to(self.model.device) + 1e-7)
+
+            # increment generation step
+            generation_step += 1
 
             # Pre-process the probability distribution of the next tokens.
             logits = outputs.logits[:, -1, :]
@@ -290,7 +323,7 @@ class StreamModel:
                 status = 0 - status
 
             # Yield predictions and status.
-            yield tokens, token_logprobs, top_tokens, top_logprobs, status
+            yield tokens, token_logprobs, top_tokens, top_logprobs, status, prompt_logprobs
 
             # Stop when finished or exceeded the max length.
             if status.max() <= 0:
