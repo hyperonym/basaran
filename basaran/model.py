@@ -86,7 +86,7 @@ class StreamModel:
                 for i, token in enumerate(input_ids):
 
                     token_logprob = 0
-                    if i > 0:
+                    if i > 0 and not self.model.config.is_encoder_decoder:
                         token_logprob = prompt_logprobs[i-1,0]
 
                     samples = self._sample(token, token_logprob, [], []) if logprobs > 0 else {}
