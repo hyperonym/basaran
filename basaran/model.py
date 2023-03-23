@@ -46,6 +46,9 @@ class StreamModel:
         else:
             raise TypeError("prompt must be a string or a 1-d tensor")
 
+        # check if max_tokens==0
+        max_tokens_is_zero = (max_tokens == 0)
+
         # Ensure arguments are non-negative.
         min_tokens = max(min_tokens, 0)
         max_tokens = max(max_tokens, 1)
@@ -92,37 +95,39 @@ class StreamModel:
                         offset = detokenizers[i].start
                         yield map_choice(text, i, text_offset=offset, **samples)
 
-            for i in range(n):
-                # Check and update the finish status of the sequence.
-                if finish_reasons[i]:
-                    continue
-                if status[i] == 0:
-                    finish_reasons[i] = "stop"
-                elif status[i] == -1:
-                    finish_reasons[i] = "length"
+            # check if max_tokens was set to zero by user
+            if not max_tokens_is_zero:
+                for i in range(n):
+                    # Check and update the finish status of the sequence.
+                    if finish_reasons[i]:
+                        continue
+                    if status[i] == 0:
+                        finish_reasons[i] = "stop"
+                    elif status[i] == -1:
+                        finish_reasons[i] = "length"
 
-                # Collect samples of the most likely tokens if required.
-                samples = (
-                    self._sample(
-                        token=tokens[i],
-                        token_logprob=token_logprobs[i],
-                        top_tokens=top_tokens[i],
-                        top_logprobs=top_logprobs[i],
+                    # Collect samples of the most likely tokens if required.
+                    samples = (
+                        self._sample(
+                            token=tokens[i],
+                            token_logprob=token_logprobs[i],
+                            top_tokens=top_tokens[i],
+                            top_logprobs=top_logprobs[i],
+                        )
+                        if logprobs > 0
+                        else {}
                     )
-                    if logprobs > 0
-                    else {}
-                )
 
-                # Yield predicted tokens.
-                text = detokenizers[i].decode(tokens[i])
-                offset = detokenizers[i].start
-                yield map_choice(
-                    text,
-                    i,
-                    text_offset=offset,
-                    finish_reason=finish_reasons[i],
-                    **samples,
-                )
+                    # Yield predicted tokens.
+                    text = detokenizers[i].decode(tokens[i])
+                    offset = detokenizers[i].start
+                    yield map_choice(
+                        text,
+                        i,
+                        text_offset=offset,
+                        finish_reason=finish_reasons[i],
+                        **samples,
+                    )
 
     def _sample(self, token, token_logprob, top_tokens, top_logprobs):
         """Sample log probabilities of the most likely tokens."""
