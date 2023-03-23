@@ -17,7 +17,7 @@ setup(
     license="MIT",
     packages=find_packages(),
     python_requires=">=3.8.0",
-    install_requires=["tenacity", "torch", "transformers"],
+    install_requires=["torch", "transformers"],
     keywords=["api", "gpt", "huggingface", "nlp", "openai", "transformer"],
     classifiers=[
         "Development Status :: 4 - Beta",
