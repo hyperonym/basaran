@@ -323,7 +323,7 @@ def load_model(
         kwargs["device_map"] = "auto"
         kwargs["load_in_8bit"] = load_in_8bit
 
-        # Cast all parameters to half-precision if quantization is enabled.
+        # Cast all parameters to float16 if quantization is enabled.
         if half_precision or load_in_8bit:
             kwargs["torch_dtype"] = torch.float16
 
