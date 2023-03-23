@@ -7,7 +7,7 @@ services:
         environment:
             MODEL: "bigscience/bloomz-560m"
             SERVER_MODEL_NAME: "bloomz-560m"
-            MODEL_LOAD_IN_8BIT: "true"
+            MODEL_HALF_PRECISION: "true"
             CUDA_MEMORY_FRACTION: "1.0"
         ports:
             - "80:80"
