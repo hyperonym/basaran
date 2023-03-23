@@ -4,7 +4,6 @@ A text generation model with stream decoding.
 import copy
 
 import torch
-from tenacity import retry, stop_after_attempt, wait_fixed
 from transformers import (
     AutoModelForCausalLM,
     AutoModelForSeq2SeqLM,
@@ -117,14 +116,6 @@ class StreamModel:
                     **samples,
                 )
 
-    @retry(stop=stop_after_attempt(5), wait=wait_fixed(1))
-    def _infer(self, model_fn, **kwargs):
-        """Call a model function in inference mode with auto retrying."""
-        # This is a temporary workaround for bitsandbytes #162:
-        # https://github.com/TimDettmers/bitsandbytes/issues/162
-        with torch.inference_mode():
-            return model_fn(**kwargs)
-
     def _sample(self, token, token_logprob, top_tokens, top_logprobs):
         """Sample log probabilities of the most likely tokens."""
         token = self.tokenizer.decode(token)
@@ -220,8 +211,8 @@ class StreamModel:
             encoder_kwargs.pop("use_cache", None)
             encoder_kwargs["input_ids"] = input_ids
             encoder_kwargs["return_dict"] = True
-            encoder_outputs = self._infer(encoder, **encoder_kwargs)
-            kwargs["encoder_outputs"] = encoder_outputs
+            with torch.inference_mode():
+                kwargs["encoder_outputs"] = encoder(**encoder_kwargs)
 
             # Reinitialize inputs for the decoder.
             decoder_start_token_id = config.decoder_start_token_id
@@ -242,13 +233,13 @@ class StreamModel:
             inputs = self.model.prepare_inputs_for_generation(
                 input_ids, **kwargs
             )  # noqa: E501
-            outputs = self._infer(
-                self.model,
-                **inputs,
-                return_dict=True,
-                output_attentions=False,
-                output_hidden_states=False,
-            )
+            with torch.inference_mode():
+                outputs = self.model(
+                    **inputs,
+                    return_dict=True,
+                    output_attentions=False,
+                    output_hidden_states=False,
+                )
 
             # Pre-process the probability distribution of the next tokens.
             logits = outputs.logits[:, -1, :]
