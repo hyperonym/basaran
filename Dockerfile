@@ -1,4 +1,4 @@
-FROM nvcr.io/nvidia/pytorch:22.08-py3
+FROM nvcr.io/nvidia/pytorch:23.02-py3
 
 # Create app directory
 WORKDIR /app
