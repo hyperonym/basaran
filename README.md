@@ -11,12 +11,12 @@ The open source community will eventually witness the [Stable Diffusion](https:/
 
 The key features of Basaran are:
 
-* Stream generation using various decoding strategies.
-* Support both decoder-only and encoder-decoder models.
+* Streaming generation using various decoding strategies.
+* Support for both decoder-only and encoder-decoder models.
 * Detokenizer that handles surrogates and whitespace.
-* Multi-GPU support with optional 8-bit quantization.
+* Multi-GPU support with optional quantization.
 * Real-time partial progress using [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format).
-* Compatible with OpenAI API and client libraries.
+* Compatibility with OpenAI API and client libraries.
 * Comes with a fancy web-based playground!
 
 <img src="https://github.com/hyperonym/basaran/blob/master/docs/assets/playground.gif?raw=true" width="640">
@@ -161,11 +161,11 @@ Basaran's API format is consistent with OpenAI's, with compatibility differences
 
 ### Models
 
-Each Basaran process serves only one model, so the result will only contain this model.
+Each Basaran process serves only one model, so the result will only contain that model.
 
 ### Completions
 
-Although Basaran does not support the `model` parameter, the OpenAI client library requires this parameter to be present. Therefore, you can fill in any model name you want.
+Although Basaran does not support the `model` parameter, the OpenAI client library requires it to be present. Therefore, you can enter any random model name.
 
 | Parameter | Basaran | OpenAI | Default Value | Maximum Value |
 | --- | --- | --- | --- | --- |
