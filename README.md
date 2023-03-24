@@ -11,12 +11,12 @@ The open source community will eventually witness the [Stable Diffusion](https:/
 
 The key features of Basaran are:
 
-* Stream generation using various decoding strategies.
-* Support both decoder-only and encoder-decoder models.
+* Streaming generation using various decoding strategies.
+* Support for both decoder-only and encoder-decoder models.
 * Detokenizer that handles surrogates and whitespace.
-* Multi-GPU support with optional 8-bit quantization.
+* Multi-GPU support with optional quantization.
 * Real-time partial progress using [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format).
-* Compatible with OpenAI API and client libraries.
+* Compatibility with OpenAI API and client libraries.
 * Comes with a fancy web-based playground!
 
 <img src="https://github.com/hyperonym/basaran/blob/master/docs/assets/playground.gif?raw=true" width="640">
@@ -25,7 +25,7 @@ The key features of Basaran are:
 
 ### TL;DR
 
-Replace `user/repo` with the selected model (e.g. [`bigscience/bloomz-560m`](https://huggingface.co/bigscience/bloomz-560m)) and `X.Y.Z` with the [latest version](https://hub.docker.com/r/hyperonym/basaran/tags), then run:
+Replace `user/repo` with your [selected model](https://huggingface.co/models?pipeline_tag=text-generation) and `X.Y.Z` with the [latest version](https://hub.docker.com/r/hyperonym/basaran/tags), then run:
 
 ```bash
 docker run -p 80:80 -e MODEL=user/repo hyperonym/basaran:X.Y.Z
@@ -56,7 +56,7 @@ For the above use cases, you can find sample [Dockerfiles](https://github.com/hy
 
 #### Without Docker
 
-Basaran is tested on Python 3.8+ and PyTorch 1.13. You should create a [virtual environment](https://docs.python.org/3/library/venv.html) with the version of Python you want to use, and activate it before proceeding.
+Basaran is tested on Python 3.8+ and PyTorch 1.13+. You should create a [virtual environment](https://docs.python.org/3/library/venv.html) with the version of Python you want to use, and activate it before proceeding.
 
 1. Clone the repository:
 
@@ -147,7 +147,7 @@ curl http://127.0.0.1/v1/completions \
 
 #### OpenAI Client Library
 
-If your application uses [client libraries](https://github.com/openai/openai-python) provided by OpenAI, you only need to modify the `OPENAI_API_BASE` environment variable to Basaran's corresponding endpoint:
+If your application uses [client libraries](https://github.com/openai/openai-python) provided by OpenAI, you only need to modify the `OPENAI_API_BASE` environment variable to match Basaran's endpoint:
 
 ```bash
 OPENAI_API_BASE="http://127.0.0.1/v1" python your_app.py
@@ -157,15 +157,15 @@ The [examples](https://github.com/hyperonym/basaran/tree/master/examples) direct
 
 ## Compatibility
 
-Basaran's API format is consistent with OpenAI's, with compatibility differences mainly in parameter support and response fields. The following sections provide detailed information on the compatibility of each endpoint.
+Basaran's API format is consistent with OpenAI's, with differences in compatibility mainly in terms of parameter support and response fields. The following sections provide detailed information on the compatibility of each endpoint.
 
 ### Models
 
-Each Basaran process serves only one model, so the result will only contain this model.
+Each Basaran process serves only one model, so the result will only contain that model.
 
 ### Completions
 
-Although Basaran does not support the `model` parameter, the OpenAI client library requires this parameter to be present. Therefore, you can fill in any model name you want.
+Although Basaran does not support the `model` parameter, the OpenAI client library requires it to be present. Therefore, you can enter any random model name.
 
 | Parameter | Basaran | OpenAI | Default Value | Maximum Value |
 | --- | --- | --- | --- | --- |
@@ -187,6 +187,37 @@ Although Basaran does not support the `model` parameter, the OpenAI client libra
 | `logit_bias` | ○ | ● | - | - |
 | `user` | ○ | ● | - | - |
 
+### Chat
+
+Providing a unified chat API is currently difficult because each model has a different format for chat history.
+
+Therefore, it is recommended to pre-format the chat history based on the requirements of the specific model and use it as the prompt for the completion API.
+
+#### [GPT-NeoXT-Chat-Base-20B](https://huggingface.co/togethercomputer/GPT-NeoXT-Chat-Base-20B)
+
+```
+**Summarize a long document into a single sentence and ...**
+
+<human>: Last year, the travel industry saw a big ...
+
+<bot>: If you're traveling this spring break, ...
+
+<human>: But ...
+
+<bot>:
+```
+
+#### [chatglm-6b](https://huggingface.co/THUDM/chatglm-6b)
+
+```
+[Round 0]
+问：你好
+答：你好!有什么我可以帮助你的吗?
+[Round 1]
+问：你是谁？
+答：
+```
+
 ## Roadmap
 
 - [x] API
@@ -204,7 +235,7 @@ Although Basaran does not support the `model` parameter, the OpenAI client libra
     - [x] Decoding strategies
         - [x] Random sampling with temperature
         - [x] Nucleus-sampling (top-p)
-        - [ ] Contrastive search
+        - [ ] Frequency and presence penalties
 
 See the [open issues](https://github.com/hyperonym/basaran/issues) for a full list of proposed features.
 
