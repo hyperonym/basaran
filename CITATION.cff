@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Ji"
+  given-names: "Yichao"
+  orcid: "https://orcid.org/0000-0002-3828-6724"
+- family-names: "Giffard"
+  given-names: "Gideon"
+- family-names: "Ji"
+  given-names: "Yiqun"
+title: "Basaran"
+date-released: 2023-02-21
+url: "https://github.com/hyperonym/basaran"
