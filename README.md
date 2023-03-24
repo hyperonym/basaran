@@ -25,7 +25,7 @@ The key features of Basaran are:
 
 ### TL;DR
 
-Replace `user/repo` with the selected model (e.g. [`bigscience/bloomz-560m`](https://huggingface.co/bigscience/bloomz-560m)) and `X.Y.Z` with the [latest version](https://hub.docker.com/r/hyperonym/basaran/tags), then run:
+Replace `user/repo` with your [selected model](https://huggingface.co/models?pipeline_tag=text-generation) and `X.Y.Z` with the [latest version](https://hub.docker.com/r/hyperonym/basaran/tags), then run:
 
 ```bash
 docker run -p 80:80 -e MODEL=user/repo hyperonym/basaran:X.Y.Z
@@ -56,7 +56,7 @@ For the above use cases, you can find sample [Dockerfiles](https://github.com/hy
 
 #### Without Docker
 
-Basaran is tested on Python 3.8+ and PyTorch 1.13. You should create a [virtual environment](https://docs.python.org/3/library/venv.html) with the version of Python you want to use, and activate it before proceeding.
+Basaran is tested on Python 3.8+ and PyTorch 1.13+. You should create a [virtual environment](https://docs.python.org/3/library/venv.html) with the version of Python you want to use, and activate it before proceeding.
 
 1. Clone the repository:
 
@@ -147,7 +147,7 @@ curl http://127.0.0.1/v1/completions \
 
 #### OpenAI Client Library
 
-If your application uses [client libraries](https://github.com/openai/openai-python) provided by OpenAI, you only need to modify the `OPENAI_API_BASE` environment variable to Basaran's corresponding endpoint:
+If your application uses [client libraries](https://github.com/openai/openai-python) provided by OpenAI, you only need to modify the `OPENAI_API_BASE` environment variable to match Basaran's endpoint:
 
 ```bash
 OPENAI_API_BASE="http://127.0.0.1/v1" python your_app.py
@@ -157,7 +157,7 @@ The [examples](https://github.com/hyperonym/basaran/tree/master/examples) direct
 
 ## Compatibility
 
-Basaran's API format is consistent with OpenAI's, with compatibility differences mainly in parameter support and response fields. The following sections provide detailed information on the compatibility of each endpoint.
+Basaran's API format is consistent with OpenAI's, with differences in compatibility mainly in terms of parameter support and response fields. The following sections provide detailed information on the compatibility of each endpoint.
 
 ### Models
 
