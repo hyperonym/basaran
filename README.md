@@ -187,6 +187,37 @@ Although Basaran does not support the `model` parameter, the OpenAI client libra
 | `logit_bias` | ○ | ● | - | - |
 | `user` | ○ | ● | - | - |
 
+### Chat
+
+Providing a unified chat API is currently difficult because each model has a different format for chat history.
+
+Therefore, it is recommended to pre-format the chat history based on the requirements of the specific model and use it as the prompt for the completion API.
+
+#### [GPT-NeoXT-Chat-Base-20B](https://huggingface.co/togethercomputer/GPT-NeoXT-Chat-Base-20B)
+
+```
+**Summarize a long document into a single sentence and...**
+
+<human>: Last year, the travel industry saw a big ...
+
+<bot>: If you're traveling this spring break, ...
+
+<human>: But ...
+
+<bot>:
+```
+
+#### [chatglm-6b](https://huggingface.co/THUDM/chatglm-6b)
+
+```
+[Round 0]
+问：你好
+答：你好!有什么我可以帮助你的吗?
+[Round 1]
+问：你是谁？
+答：
+```
+
 ## Roadmap
 
 - [x] API
@@ -204,7 +235,7 @@ Although Basaran does not support the `model` parameter, the OpenAI client libra
     - [x] Decoding strategies
         - [x] Random sampling with temperature
         - [x] Nucleus-sampling (top-p)
-        - [ ] Contrastive search
+        - [ ] Frequency and presence penalties
 
 See the [open issues](https://github.com/hyperonym/basaran/issues) for a full list of proposed features.
 
