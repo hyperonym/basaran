@@ -196,7 +196,7 @@ Therefore, it is recommended to pre-format the chat history based on the require
 #### [GPT-NeoXT-Chat-Base-20B](https://huggingface.co/togethercomputer/GPT-NeoXT-Chat-Base-20B)
 
 ```
-**Summarize a long document into a single sentence and...**
+**Summarize a long document into a single sentence and ...**
 
 <human>: Last year, the travel industry saw a big ...
 
