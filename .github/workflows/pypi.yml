@@ -20,6 +20,10 @@ jobs:
         run: make install
       - name: Build source tarball and binary wheel
         run: make build
+      - name: Upload artifacts
+        run: gh release upload ${{ github.ref_name }} dist/*.tar.gz dist/*.whl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
