@@ -22,9 +22,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
       - name: Install dependencies
-        run: |
-          pip install -U pip
-          pip install -r requirements.txt
+        run: make install
       - name: Lint with flake8
         run: make lint
       - name: Test with pytest

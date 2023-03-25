@@ -19,9 +19,7 @@ jobs:
           python-version: "3.10"
           cache: "pip"
       - name: Install dependencies
-        run: |
-          pip install -U pip
-          pip install -r requirements.txt
+        run: make install
       - name: Run coverage
         run: make test-coverage
       - name: Upload coverage to Codecov
