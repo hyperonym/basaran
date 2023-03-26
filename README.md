@@ -54,9 +54,33 @@ Basaran's image can be used in three ways:
 
 For the above use cases, you can find sample [Dockerfiles](https://github.com/hyperonym/basaran/tree/master/deployments/bundle) and [docker-compose files](https://github.com/hyperonym/basaran/tree/master/deployments/compose) in the [deployments directory](https://github.com/hyperonym/basaran/tree/master/deployments).
 
-#### Without Docker
+#### Using pip
 
 Basaran is tested on Python 3.8+ and PyTorch 1.13+. You should create a [virtual environment](https://docs.python.org/3/library/venv.html) with the version of Python you want to use, and activate it before proceeding.
+
+1. Install with `pip`:
+
+```bash
+pip install basaran
+```
+
+2. Install dependencies required for GPU acceleration (optional):
+
+```bash
+pip install accelerate bitsandbytes
+```
+
+3. Replace `user/repo` with the selected model and run Basaran:
+
+```bash
+MODEL=user/repo PORT=80 python -m basaran
+```
+
+For a complete list of environment variables, see [`__init__.py`](https://github.com/hyperonym/basaran/blob/master/basaran/__init__.py).
+
+#### Running From Source
+
+If you want to access the latest features or hack it yourself, you can choose to run from source using `git`.
 
 1. Clone the repository:
 
@@ -73,37 +97,8 @@ pip install -r requirements.txt
 3. Replace `user/repo` with the selected model and run Basaran:
 
 ```bash
-MODEL=user/repo python -m basaran
+MODEL=user/repo PORT=80 python -m basaran
 ```
-
-For a complete list of environment variables, see [`__init__.py`](https://github.com/hyperonym/basaran/blob/master/basaran/__init__.py).
-
-#### Using as a Python Library
-
-Basaran is also available as a library on [PyPI](https://pypi.org/project/basaran/) for programmatic usage.
-
-1. Install with `pip`:
-
-```bash
-pip install basaran
-```
-
-2. Use the `load_model` function to load a model:
-
-```python
-from basaran.model import load_model
-
-model = load_model("user/repo")
-```
-
-3. Generate streaming output by calling the model:
-
-```python
-for choice in model("once upon a time"):
-    print(choice)
-```
-
-The [examples](https://github.com/hyperonym/basaran/tree/master/examples) directory contains examples of [using Basaran as a library](https://github.com/hyperonym/basaran/blob/master/examples/basaran-python-library/main.py).
 
 ### Basic Usage
 
@@ -154,6 +149,33 @@ OPENAI_API_BASE="http://127.0.0.1/v1" python your_app.py
 ```
 
 The [examples](https://github.com/hyperonym/basaran/tree/master/examples) directory contains examples of [using the OpenAI Python library](https://github.com/hyperonym/basaran/blob/master/examples/openai-python-library/main.py).
+
+#### Using as a Python Library
+
+Basaran is also available as a library on [PyPI](https://pypi.org/project/basaran/). It can be used directly in Python without the need to start a separate API server.
+
+1. Install with `pip`:
+
+```bash
+pip install basaran
+```
+
+2. Use the `load_model` function to load a model:
+
+```python
+from basaran.model import load_model
+
+model = load_model("user/repo")
+```
+
+3. Generate streaming output by calling the model:
+
+```python
+for choice in model("once upon a time"):
+    print(choice)
+```
+
+The [examples](https://github.com/hyperonym/basaran/tree/master/examples) directory contains examples of [using Basaran as a library](https://github.com/hyperonym/basaran/blob/master/examples/basaran-python-library/main.py).
 
 ## Compatibility
 
