@@ -257,7 +257,8 @@ Therefore, it is recommended to pre-format the chat history based on the require
     - [x] Decoding strategies
         - [x] Random sampling with temperature
         - [x] Nucleus-sampling (top-p)
-        - [ ] Frequency and presence penalties
+        - [ ] Stop sequences
+        - [ ] Presence and frequency penalties
 
 See the [open issues](https://github.com/hyperonym/basaran/issues) for a full list of proposed features.
 
