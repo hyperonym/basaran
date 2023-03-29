@@ -296,9 +296,7 @@ class Completion extends EventTarget {
                     if (highlight) {
                         span.setAttribute(
                             "style",
-                            `background-color: rgba(70, 120, 220, ${
-                                0.5 * prob
-                            })`
+                            `background-color: rgba(70, 120, 220, ${0.5 * prob})`
                         );
                     }
                 }
@@ -422,10 +420,11 @@ class Inspector {
 
     handles.set(presets[0]);
 
+    let submit = document.querySelector(".pg-submit");
     let prompt = document.querySelector(".pg-prompt");
     let outputs = document.querySelector(".pg-outputs");
 
-    document.querySelector(".pg-submit").addEventListener("click", (e) => {
+    submit.addEventListener("click", (e) => {
         if (completion) {
             if (completion.running) {
                 completion.stop();
@@ -450,6 +449,13 @@ class Inspector {
             e.target.textContent = "Submit";
             e.target.dataset.state = "submit";
         });
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key == "Enter") {
+            e.preventDefault();
+            submit.click();
+        }
     });
 
     let resizePrompt = () => {
