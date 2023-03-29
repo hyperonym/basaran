@@ -1,4 +1,4 @@
-FROM hyperonym/basaran:0.13.4
+FROM hyperonym/basaran:0.13.5
 
 # Set working directory
 WORKDIR /app
@@ -7,11 +7,12 @@ WORKDIR /app
 RUN pip install icetk cpm_kernels
 
 # Download the model to be bundled
-RUN MODEL_REVISION=refs/pr/7 python utils/download.py THUDM/chatglm-6b
+RUN python utils/download.py THUDM/chatglm-6b /model refs/pr/7
 
 # Provide default environment variables
-ENV MODEL="THUDM/chatglm-6b"
+ENV MODEL="/model"
 ENV MODEL_REVISION="refs/pr/7"
 ENV MODEL_LOCAL_FILES_ONLY="true"
 ENV MODEL_TRUST_REMOTE_CODE="true"
 ENV MODEL_HALF_PRECISION="true"
+ENV SERVER_MODEL_NAME="THUDM/chatglm-6b"
