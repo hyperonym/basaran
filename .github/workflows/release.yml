@@ -9,6 +9,8 @@ jobs:
     name: release
     runs-on: ubuntu-latest
     steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@v1.2.0
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Set up Docker Buildx
