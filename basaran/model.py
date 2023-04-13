@@ -169,7 +169,7 @@ class StreamModel:
 
     def tokenize(self, text):
         """Tokenize a string into a tensor of token IDs."""
-        batch = self.tokenizer.encode(text, return_tensors="pt")
+        batch = self.tokenizer.encode(text, return_tensors="pt", add_special_tokens=False)
         return batch[0].to(self.device)
 
     def generate(self, input_ids, logprobs=0, **kwargs):
