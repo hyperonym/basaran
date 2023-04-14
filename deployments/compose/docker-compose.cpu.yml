@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
     basaran:
-        image: hyperonym/basaran:0.15.2
+        image: hyperonym/basaran:0.15.3
         restart: always
         environment:
             MODEL: "bigscience/bloomz-560m"
