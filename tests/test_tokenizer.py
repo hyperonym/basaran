@@ -44,3 +44,21 @@ class TestTokenizer:
 
         assert actual == expected
         assert detokenizer.end == len(expected)
+
+    def test_llama_tokenizer(self):
+        """Test with LLaMA tokenizer."""
+        tokenizer = AutoTokenizer.from_pretrained(
+            pretrained_model_name_or_path="./tests/data/tiny-random-llama",
+            local_files_only=True,
+        )
+        detokenizer = StreamTokenizer(tokenizer)
+
+        expected = "hello world ABC \n 你好"
+        tokens = tokenizer.encode(expected)
+
+        actual = ""
+        for token in tokens:
+            actual += detokenizer.decode(token)
+
+        assert actual == expected
+        assert detokenizer.end == len(expected)
