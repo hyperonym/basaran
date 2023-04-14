@@ -3,7 +3,7 @@ Script for building and distributing Python packages.
 """
 from setuptools import find_packages, setup
 
-VERSION = "0.15.2"
+VERSION = "0.15.3"
 
 setup(
     name="basaran",
