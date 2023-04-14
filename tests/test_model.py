@@ -81,3 +81,17 @@ class TestEncoderDecoderModel(TestModel):
         """Test completion using deterministic decoding."""
         model = load_model("./tests/data/tiny-random-t5")
         self.assert_deterministic(model)
+
+
+class TestLlamaModel(TestModel):
+    """Test text generation using LLaMA models."""
+
+    def test_stochastic(self):
+        """Test completion using stochastic decoding."""
+        model = load_model("./tests/data/tiny-random-llama")
+        self.assert_stochastic(model)
+
+    def test_deterministic(self):
+        """Test completion using deterministic decoding."""
+        model = load_model("./tests/data/tiny-random-llama")
+        self.assert_deterministic(model)
