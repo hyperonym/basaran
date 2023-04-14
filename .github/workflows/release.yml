@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@v1.2.0
+        with:
+          large-packages: false
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Set up Docker Buildx
