@@ -1,0 +1,18 @@
+#!/bin/bash -e
+
+# Set some reasonable default if they aren't
+# already defined by the user.
+
+if [[ -z "${MODEL_CACHE_DIR}" ]]; then
+    export MODEL_CACHE_DIR=$SNAP_USER_COMMON/models
+fi
+
+if [[ -z "${PORT}" ]]; then
+    export PORT=8080
+fi
+
+if [[ -z "${SERVER_THREADS}" ]]; then
+    export SERVER_THREADS=4
+fi
+
+exec "$@"
