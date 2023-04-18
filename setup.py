@@ -16,6 +16,7 @@ setup(
     author_email="prompt@hyperonym.org",
     license="MIT",
     packages=find_packages(),
+    scripts=["utils/download.py", "utils/render.py"],
     include_package_data=True,
     python_requires=">=3.8.0",
     install_requires=["flask", "jinja2", "torch", "transformers", "waitress"],
