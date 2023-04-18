@@ -18,7 +18,14 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     python_requires=">=3.8.0",
-    install_requires=["flask", "jinja2", "torch", "transformers", "waitress"],
+    install_requires=[
+        "flask-cors",
+        "flask",
+        "jinja2",
+        "torch",
+        "transformers",
+        "waitress",
+    ],
     keywords=["api", "huggingface", "nlp", "openai", "transformer"],
     classifiers=[
         "Development Status :: 4 - Beta",
