@@ -3,7 +3,7 @@ Script for building and distributing Python packages.
 """
 from setuptools import find_packages, setup
 
-VERSION = "0.15.3"
+VERSION = "0.16.0"
 
 setup(
     name="basaran",
@@ -19,7 +19,14 @@ setup(
     scripts=["utils/download.py", "utils/render.py"],
     include_package_data=True,
     python_requires=">=3.8.0",
-    install_requires=["flask", "jinja2", "torch", "transformers", "waitress"],
+    install_requires=[
+        "flask-cors",
+        "flask",
+        "jinja2",
+        "torch",
+        "transformers",
+        "waitress",
+    ],
     keywords=["api", "huggingface", "nlp", "openai", "transformer"],
     classifiers=[
         "Development Status :: 4 - Beta",
