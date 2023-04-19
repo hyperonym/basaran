@@ -1,0 +1,46 @@
+name: basaran
+adopt-info: basaran
+summary: Basaran is an open-source alternative to the OpenAI text completion API.
+description: |
+  Basaran is an open-source alternative to the OpenAI text completion API.
+  It provides a compatible streaming API for your Hugging Face Transformers-based text generation models.
+
+issues: https://github.com/hyperonym/basaran/issues
+source-code: https://github.com/hyperonym/basaran
+license: MIT
+
+base: core22
+grade: stable
+confinement: strict
+
+apps:
+
+  basaran:
+    command: bin/python3 -m basaran
+    command-chain: [bin/launcher]
+    plugs: [home, network, network-bind, removable-media]
+
+  download:
+    command: bin/python3 $SNAP/bin/download.py
+    command-chain: [bin/launcher]
+    plugs: [home, network, removable-media]
+
+parts:
+
+  basaran:
+    plugin: python
+    source: .
+    python-requirements: [requirements.txt]
+    override-pull: |
+      snapcraftctl pull
+
+      version="$(git describe --always --tags| sed -e 's/^v//;s/-/+git/;y/-/./')"
+      [ -n "$(echo $version | grep "+git")" ] && grade=devel || grade=stable
+      snapcraftctl set-version "$version"
+      snapcraftctl set-grade "$grade"
+
+  launcher:
+    plugin: dump
+    source: snap/local
+    organize:
+      'launcher' : bin/
