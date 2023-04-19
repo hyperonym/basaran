@@ -31,7 +31,7 @@ parts:
     python-requirements: [requirements.txt]
     override-pull: |
       snapcraftctl pull
-      snapcraftctl set-version "$(git describe --tags --abbrev=0)"
+      snapcraftctl set-version "$(git describe --tags --abbrev=0 | sed -e 's/^v//')"
       snapcraftctl set-grade "$grade"
 
   launcher:
