@@ -61,7 +61,7 @@ CORS(app, origins=SERVER_CORS_ORIGINS.split(","))
 def parse_options(schema):
     """Parse options specified in query parameters and request body."""
     options = {}
-    payload = request.get_json(silent=True)
+    payload = request.get_json(force=True, silent=True)
     for key, dtype in schema.items():
         # Allow casting from int to float.
         if dtype == float:
