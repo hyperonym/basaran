@@ -170,3 +170,6 @@ temp/
 
 # Model cache dir
 models/
+
+# Snap
+*.snap

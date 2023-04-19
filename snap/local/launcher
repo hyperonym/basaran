@@ -11,8 +11,4 @@ if [[ -z "${PORT}" ]]; then
     export PORT=8080
 fi
 
-if [[ -z "${SERVER_THREADS}" ]]; then
-    export SERVER_THREADS=4
-fi
-
 exec "$@"
