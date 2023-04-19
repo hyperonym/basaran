@@ -14,7 +14,6 @@ grade: stable
 confinement: strict
 
 apps:
-
   basaran:
     command: bin/python3 -m basaran
     command-chain: [bin/launcher]
@@ -26,14 +25,12 @@ apps:
     plugs: [home, network, removable-media]
 
 parts:
-
   basaran:
     plugin: python
     source: .
     python-requirements: [requirements.txt]
     override-pull: |
       snapcraftctl pull
-
       version="$(git describe --always --tags| sed -e 's/^v//;s/-/+git/;y/-/./')"
       [ -n "$(echo $version | grep "+git")" ] && grade=devel || grade=stable
       snapcraftctl set-version "$version"
@@ -43,4 +40,4 @@ parts:
     plugin: dump
     source: snap/local
     organize:
-      'launcher' : bin/
+      "launcher": bin/
