@@ -17,7 +17,7 @@ apps:
   basaran:
     command: bin/python3 -m basaran
     command-chain: [bin/launcher]
-    plugs: [home, network, network-bind, removable-media]
+    plugs: [home, network, network-bind, opengl, removable-media]
 
   download:
     command: bin/python3 $SNAP/bin/download.py
