@@ -1,0 +1,8 @@
+{% for message in messages -%}
+{% if message.role == "system" -%}
+{{ message.content }}
+{% else -%}
+<{{ message.role }}>: {{ message.content }}
+{% endif %}
+{% endfor -%}
+<assistant>: 
