@@ -1,0 +1,17 @@
+{% if messages|length >= 3 -%}
+{% for message in messages -%}
+{% if message.role == "system" -%}
+{{ message.content }}
+{% elif message.role == "user" -%}
+[Round {{ loop.index0 // 2 }}]
+问：{{ message.content }}
+{% elif message.role == "assistant" -%}
+答：{{ message.content }}
+{% endif -%}
+{% endfor -%}
+答：
+{%- else -%}
+{% for message in messages -%}
+{{ message.content }}
+{%- endfor -%}
+{% endif %}
