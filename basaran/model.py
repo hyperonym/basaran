@@ -25,7 +25,7 @@ class StreamModel:
         super().__init__()
         self.model = model
         self.tokenizer = tokenizer
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.device = "mps" if torch.backends.mps.is_available() else ("cuda" if torch.cuda.is_available() else "cpu")
 
     def __call__(
         self,
