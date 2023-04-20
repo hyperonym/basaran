@@ -1,4 +1,4 @@
-FROM hyperonym/basaran:0.16.1
+FROM hyperonym/basaran:0.16.2
 
 # Copy model files
 COPY my-secret-model /models/my-secret-model
