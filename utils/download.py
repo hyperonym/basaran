@@ -19,4 +19,5 @@ with tempfile.TemporaryDirectory() as cache_dir:
         cache_dir=cache_dir,
         local_dir_use_symlinks=False,
         resume_download=True,
+        allow_patterns=["*.bin", "*.json", "*.model", "*.py"],
     )
