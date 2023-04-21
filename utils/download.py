@@ -20,7 +20,6 @@ else:
 ignore_patterns = [
     ".*",
     "*.index.json",
-    "*.md",
     "*.bin",
     "*.ckpt",
     "*.h5",
