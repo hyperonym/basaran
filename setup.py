@@ -23,6 +23,7 @@ setup(
         "flask-cors",
         "flask",
         "jinja2",
+        "safetensors",
         "torch",
         "transformers",
         "waitress",
