@@ -4,7 +4,7 @@ FROM hyperonym/basaran:0.17.1
 WORKDIR /app
 
 # Download the model to be bundled
-RUN python utils/download.py bigscience/bloomz-560m /model
+RUN TENSOR_FORMAT=safetensors python utils/download.py bigscience/bloomz-560m /model
 
 # Provide default environment variables
 ENV MODEL="/model"
