@@ -4,7 +4,7 @@ FROM hyperonym/basaran:0.17.1
 WORKDIR /app
 
 # Download the model to be bundled
-RUN python utils/download.py huggyllama/llama-7b /model
+RUN TENSOR_FORMAT=safetensors python utils/download.py huggyllama/llama-7b /model
 
 # Provide default environment variables
 ENV MODEL="/model"
