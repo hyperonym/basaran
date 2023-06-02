@@ -79,8 +79,25 @@ def parse_options(schema):
         # body, the former takes precedence.
         if key in request.args:
             options[key] = request.args.get(key, dtype(), type=dtype_fn)
-        elif payload and key in payload and isinstance(payload[key], dtypes):
+        elif (
+            isinstance(payload, dict)
+            and key in payload
+            and isinstance(payload[key], dtypes)
+        ):
             options[key] = dtype(payload[key])
+
+        # Temporary workaround for multiple prompts (#198).
+        if (
+            key == "prompt"
+            and isinstance(payload, dict)
+            and key in payload
+            and isinstance(payload[key], list)
+        ):
+            prompts = payload[key]
+            if len(prompts) == 1:
+                options[key] = prompts[0]
+            elif len(prompts) > 1:
+                abort(400, description="only one prompt is supported")
 
     return options
 
