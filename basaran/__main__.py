@@ -23,6 +23,7 @@ from . import MODEL_LOAD_IN_8BIT
 from . import MODEL_LOAD_IN_4BIT
 from . import MODEL_4BIT_QUANT_TYPE
 from . import MODEL_4BIT_DOUBLE_QUANT
+from . import MODEL_PEFT
 from . import MODEL_LOCAL_FILES_ONLY
 from . import MODEL_TRUST_REMOTE_CODE
 from . import MODEL_HALF_PRECISION
@@ -44,6 +45,7 @@ stream_model = load_model(
     name_or_path=MODEL,
     revision=MODEL_REVISION,
     cache_dir=MODEL_CACHE_DIR,
+    is_peft=MODEL_PEFT,
     load_in_8bit=MODEL_LOAD_IN_8BIT,
     load_in_4bit=MODEL_LOAD_IN_4BIT,
     quant_type=MODEL_4BIT_QUANT_TYPE,

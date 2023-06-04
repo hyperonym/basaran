@@ -18,6 +18,7 @@ HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", "80"))
 
 # Model-related arguments:
+MODEL_PEFT = is_true(os.getenv("MODEL_PEFT", ""))
 MODEL_REVISION = os.getenv("MODEL_REVISION", "")
 MODEL_CACHE_DIR = os.getenv("MODEL_CACHE_DIR", "models")
 MODEL_LOAD_IN_8BIT = is_true(os.getenv("MODEL_LOAD_IN_8BIT", ""))
