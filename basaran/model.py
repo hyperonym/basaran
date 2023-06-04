@@ -12,6 +12,7 @@ from transformers import (
     MinNewTokensLengthLogitsProcessor,
     TemperatureLogitsWarper,
     TopPLogitsWarper,
+    BitsAndBytesConfig
 )
 
 from .choice import map_choice
@@ -311,6 +312,8 @@ def load_model(
     cache_dir=None,
     load_in_8bit=False,
     load_in_4bit=False,
+    quant_type="fp4",
+    double_quant=False,
     local_files_only=False,
     trust_remote_code=False,
     half_precision=False,
@@ -328,10 +331,24 @@ def load_model(
 
     # Set device mapping and quantization options if CUDA is available.
     if torch.cuda.is_available():
+        # Set quantization options if specified.
+        quant_config = None
+        if load_in_8bit and load_in_4bit:
+            raise ValueError("Only one of load_in_8bit and load_in_4bit can be True")
+        if load_in_8bit:
+            quant_config = BitsAndBytesConfig(
+                load_in_8bit=True,
+            )
+        elif load_in_4bit:
+            quant_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_quant_type=quant_type,
+                bnb_4bit_use_double_quant=double_quant,
+                bnb_4bit_compute_dtype=torch.bfloat16,
+            )
         kwargs = kwargs.copy()
         kwargs["device_map"] = "auto"
-        kwargs["load_in_8bit"] = load_in_8bit
-        kwargs["load_in_4bit"] = load_in_4bit
+        kwargs["quantization_config"] = quant_config
 
         # Cast all parameters to float16 if quantization is enabled.
         if half_precision or load_in_8bit or load_in_4bit:
