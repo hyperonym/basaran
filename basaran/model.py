@@ -302,6 +302,7 @@ def load_model(
     revision=None,
     cache_dir=None,
     load_in_8bit=False,
+    load_in_4bit=False,
     local_files_only=False,
     trust_remote_code=False,
     half_precision=False,
@@ -322,9 +323,10 @@ def load_model(
         kwargs = kwargs.copy()
         kwargs["device_map"] = "auto"
         kwargs["load_in_8bit"] = load_in_8bit
+        kwargs["load_in_4bit"] = load_in_4bit
 
         # Cast all parameters to float16 if quantization is enabled.
-        if half_precision or load_in_8bit:
+        if half_precision or load_in_8bit or load_in_4bit:
             kwargs["torch_dtype"] = torch.float16
 
     # Support both decoder-only and encoder-decoder models.
