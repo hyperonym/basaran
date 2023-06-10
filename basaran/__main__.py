@@ -20,6 +20,7 @@ from . import PORT
 from . import MODEL_REVISION
 from . import MODEL_CACHE_DIR
 from . import MODEL_LOAD_IN_8BIT
+from . import MODEL_LOAD_IN_4BIT
 from . import MODEL_LOCAL_FILES_ONLY
 from . import MODEL_TRUST_REMOTE_CODE
 from . import MODEL_HALF_PRECISION
@@ -42,6 +43,7 @@ stream_model = load_model(
     revision=MODEL_REVISION,
     cache_dir=MODEL_CACHE_DIR,
     load_in_8bit=MODEL_LOAD_IN_8BIT,
+    load_in_4bit=MODEL_LOAD_IN_4BIT,
     local_files_only=MODEL_LOCAL_FILES_ONLY,
     trust_remote_code=MODEL_TRUST_REMOTE_CODE,
     half_precision=MODEL_HALF_PRECISION,
