@@ -37,6 +37,7 @@ class StreamModel:
         n=1,
         logprobs=0,
         echo=False,
+        **kwargs,
     ):
         """Create a completion stream for the provided prompt."""
         if isinstance(prompt, str):
@@ -69,6 +70,17 @@ class StreamModel:
                 if echo:
                     yield map_choice(text, i, text_offset=offset, **samples)
 
+        generate_kwargs = {
+            **dict(
+                logprobs=logprobs,
+                min_new_tokens=min_tokens,
+                max_new_tokens=max_tokens,
+                temperature=temperature,
+                top_p=top_p,
+            ),
+            **kwargs
+        }
+
         # Generate completion tokens.
         for (
             tokens,
@@ -78,11 +90,7 @@ class StreamModel:
             status,
         ) in self.generate(
             input_ids[None, :].repeat(n, 1),
-            logprobs=logprobs,
-            min_new_tokens=min_tokens,
-            max_new_tokens=max_tokens,
-            temperature=temperature,
-            top_p=top_p,
+            **generate_kwargs,
         ):
             for i in range(n):
                 # Check and update the finish status of the sequence.
