@@ -13,3 +13,4 @@ torch>=1.12.1
 transformers[sentencepiece]~=4.30.1
 waitress~=2.1.2
 peft~=0.3.0
+scipy~=1.10.1
