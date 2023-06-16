@@ -10,5 +10,5 @@ jinja2>=3.1.2
 pytest>=6.2.5
 safetensors~=0.3.1
 torch>=1.12.1
-transformers[sentencepiece]~=4.30.1
+transformers[sentencepiece]~=4.30.2
 waitress~=2.1.2
