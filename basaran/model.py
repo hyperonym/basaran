@@ -16,8 +16,7 @@ from transformers import (
 )
 from peft import (
     PeftConfig,
-    PeftModelForCausalLM,
-    PeftModelForSeq2SeqLM
+    PeftModel
 )
 
 from .choice import map_choice
@@ -361,6 +360,7 @@ def load_model(
 
     if is_peft:
         peft_config = PeftConfig.from_pretrained(name_or_path)
+        peft_model_name_or_path = name_or_path
         name_or_path = peft_config.base_model_name_or_path
 
     tokenizer = AutoTokenizer.from_pretrained(name_or_path, **kwargs)
@@ -368,12 +368,10 @@ def load_model(
     # Support both decoder-only and encoder-decoder models.
     try:
         model = AutoModelForCausalLM.from_pretrained(name_or_path, **kwargs)
-        if is_peft:
-            model = PeftModelForCausalLM(model, peft_config)
     except ValueError:
         model = AutoModelForSeq2SeqLM.from_pretrained(name_or_path, **kwargs)
-        if is_peft:
-            model = PeftModelForSeq2SeqLM(model, peft_config)
+    if is_peft:
+        model = PeftModel.from_pretrained(model, peft_model_name_or_path)
 
     # Check if the model has text generation capabilities.
     if not model.can_generate():
