@@ -29,6 +29,7 @@ MODEL_HALF_PRECISION = is_true(os.getenv("MODEL_HALF_PRECISION", ""))
 # Server-related arguments:
 # https://docs.pylonsproject.org/projects/waitress/en/stable/arguments.html
 SERVER_THREADS = int(os.getenv("SERVER_THREADS", "32"))
+SERVER_TOKEN = os.getenv("SERVER_TOKEN")
 SERVER_IDENTITY = os.getenv("SERVER_IDENTITY", "basaran")
 SERVER_CONNECTION_LIMIT = int(os.getenv("SERVER_CONNECTION_LIMIT", "512"))
 SERVER_CHANNEL_TIMEOUT = int(os.getenv("SERVER_CHANNEL_TIMEOUT", "300"))

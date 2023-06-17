@@ -6,6 +6,7 @@ import secrets
 import time
 
 import waitress
+from functools import wraps
 from flask import Flask, Response, abort, jsonify, render_template, request
 from flask_cors import CORS
 
@@ -25,6 +26,7 @@ from . import MODEL_LOCAL_FILES_ONLY
 from . import MODEL_TRUST_REMOTE_CODE
 from . import MODEL_HALF_PRECISION
 from . import SERVER_THREADS
+from . import SERVER_TOKEN
 from . import SERVER_IDENTITY
 from . import SERVER_CONNECTION_LIMIT
 from . import SERVER_CHANNEL_TIMEOUT
@@ -103,6 +105,27 @@ def parse_options(schema):
 
     return options
 
+def require_bearer_token(view_func):
+    @wraps(view_func)
+    def wrapper(*args, **kwargs):
+        # Get the Authorization header
+        auth_header = request.headers.get('Authorization')
+
+        if auth_header:
+            # Extract the bearer token
+            try:
+                token_type, token = auth_header.split(' ')
+                if token_type.lower() == 'bearer':
+                    if token == SERVER_TOKEN:
+                        return view_func(*args, **kwargs)
+            except ValueError:
+                pass
+
+        # If the authorization header is missing or invalid
+        return jsonify({'message': 'Access denied'}), 401
+
+    return wrapper
+
 
 @app.route("/")
 def render_playground():
@@ -128,6 +151,7 @@ def retrieve_model(name):
 
 
 @app.route("/v1/completions", methods=["GET", "POST"])
+@require_bearer_token
 def create_completion():
     """Create a completion for the provided prompt and parameters."""
     schema = {
