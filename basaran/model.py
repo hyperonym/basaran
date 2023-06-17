@@ -371,7 +371,7 @@ def load_model(
     except ValueError:
         model = AutoModelForSeq2SeqLM.from_pretrained(name_or_path, **kwargs)
     if is_peft:
-        model = PeftModel.from_pretrained(model, peft_model_name_or_path)
+        model = PeftModel.from_pretrained(model, peft_model_name_or_path, **kwargs)
 
     # Check if the model has text generation capabilities.
     if not model.can_generate():
