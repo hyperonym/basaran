@@ -78,7 +78,7 @@ class StreamModel:
                 temperature=temperature,
                 top_p=top_p,
             ),
-            **kwargs
+            **kwargs,
         }
 
         # Generate completion tokens.
@@ -347,4 +347,4 @@ def load_model(
     if not model.can_generate():
         raise TypeError(f"{name_or_path} is not a text generation model")
 
-    return StreamModel(model, tokenizer)
+    return StreamModel(model.eval(), tokenizer)
