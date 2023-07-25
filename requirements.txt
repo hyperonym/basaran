@@ -1,5 +1,5 @@
 accelerate~=0.21.0
-bitsandbytes~=0.40.2
+bitsandbytes~=0.41.0
 build>=0.10.0
 coverage>=6.4.2
 flake8>=3.7.9
@@ -10,5 +10,5 @@ jinja2>=3.1.2
 pytest>=6.2.5
 safetensors~=0.3.1
 torch>=1.12.1
-transformers[sentencepiece]~=4.30.2
+transformers[sentencepiece]~=4.31.0
 waitress~=2.1.2
