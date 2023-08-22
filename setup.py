@@ -24,6 +24,7 @@ setup(
         "flask",
         "jinja2",
         "safetensors",
+        "scipy",
         "torch",
         "transformers",
         "waitress",
