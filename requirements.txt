@@ -9,6 +9,7 @@ huggingface-hub~=0.16.4
 jinja2>=3.1.2
 pytest>=6.2.5
 safetensors~=0.3.2
+scipy>=1.6.3
 torch>=1.12.1
 transformers[sentencepiece]~=4.31.0
 waitress~=2.1.2
