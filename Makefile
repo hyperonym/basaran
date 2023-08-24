@@ -60,4 +60,4 @@ test:
 .PHONY: test-coverage
 test-coverage:
 	@coverage run -m pytest
-	@coverage report
+	@coverage report -i
