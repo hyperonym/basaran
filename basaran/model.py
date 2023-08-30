@@ -25,11 +25,11 @@ class StreamModel:
         super().__init__()
         self.tokenizer = tokenizer
         if torch.backends.mps.is_available():
-            self.device = 'mps'
+            self.device = "mps"
         elif torch.cuda.is_available():
-            self.device = 'cuda'
+            self.device = "cuda"
         else:
-            self.device = 'cpu'
+            self.device = "cpu"
         self.model = model.to(self.device)
 
     def __call__(
