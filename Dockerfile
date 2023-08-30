@@ -45,4 +45,4 @@ ENV COMPLETION_MAX_INTERVAL="50"
 ENV CUDA_MEMORY_FRACTION="1.0"
 
 # Specify entrypoint and default parameters
-ENTRYPOINT [ "python", "-m", "basaran" ]
+ENTRYPOINT ["python", "-m", "basaran"]
