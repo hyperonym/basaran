@@ -11,5 +11,5 @@ pytest>=6.2.5
 safetensors~=0.3.3
 scipy>=1.6.3
 torch>=1.12.1
-transformers[sentencepiece]~=4.33.2
+transformers[sentencepiece]~=4.33.3
 waitress~=2.1.2
