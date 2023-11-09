@@ -1,4 +1,4 @@
-accelerate~=0.20.3
+accelerate~=0.24.1
 bitsandbytes~=0.41.2
 build>=0.10.0
 coverage>=6.4.2
