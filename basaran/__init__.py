@@ -18,10 +18,13 @@ HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", "80"))
 
 # Model-related arguments:
+MODEL_PEFT = is_true(os.getenv("MODEL_PEFT", ""))
 MODEL_REVISION = os.getenv("MODEL_REVISION", "")
 MODEL_CACHE_DIR = os.getenv("MODEL_CACHE_DIR", "models")
 MODEL_LOAD_IN_8BIT = is_true(os.getenv("MODEL_LOAD_IN_8BIT", ""))
 MODEL_LOAD_IN_4BIT = is_true(os.getenv("MODEL_LOAD_IN_4BIT", ""))
+MODEL_4BIT_QUANT_TYPE = os.getenv("MODEL_4BIT_QUANT_TYPE", "fp4")
+MODEL_4BIT_DOUBLE_QUANT = is_true(os.getenv("MODEL_4BIT_DOUBLE_QUANT", ""))
 MODEL_LOCAL_FILES_ONLY = is_true(os.getenv("MODEL_LOCAL_FILES_ONLY", ""))
 MODEL_TRUST_REMOTE_CODE = is_true(os.getenv("MODEL_TRUST_REMOTE_CODE", ""))
 MODEL_HALF_PRECISION = is_true(os.getenv("MODEL_HALF_PRECISION", ""))

@@ -12,6 +12,11 @@ from transformers import (
     MinNewTokensLengthLogitsProcessor,
     TemperatureLogitsWarper,
     TopPLogitsWarper,
+    BitsAndBytesConfig
+)
+from peft import (
+    PeftConfig,
+    PeftModel
 )
 
 from .choice import map_choice
@@ -314,8 +319,11 @@ def load_model(
     name_or_path,
     revision=None,
     cache_dir=None,
+    is_peft=False,
     load_in_8bit=False,
     load_in_4bit=False,
+    quant_type="fp4",
+    double_quant=False,
     local_files_only=False,
     trust_remote_code=False,
     half_precision=False,
@@ -329,24 +337,46 @@ def load_model(
         kwargs["revision"] = revision
     if cache_dir:
         kwargs["cache_dir"] = cache_dir
-    tokenizer = AutoTokenizer.from_pretrained(name_or_path, **kwargs)
 
     # Set device mapping and quantization options if CUDA is available.
     if torch.cuda.is_available():
+        # Set quantization options if specified.
+        quant_config = None
+        if load_in_8bit and load_in_4bit:
+            raise ValueError("Only one of load_in_8bit and load_in_4bit can be True")
+        if load_in_8bit:
+            quant_config = BitsAndBytesConfig(
+                load_in_8bit=True,
+            )
+        elif load_in_4bit:
+            quant_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_quant_type=quant_type,
+                bnb_4bit_use_double_quant=double_quant,
+                bnb_4bit_compute_dtype=torch.bfloat16,
+            )
         kwargs = kwargs.copy()
         kwargs["device_map"] = "auto"
-        kwargs["load_in_8bit"] = load_in_8bit
-        kwargs["load_in_4bit"] = load_in_4bit
+        kwargs["quantization_config"] = quant_config
 
         # Cast all parameters to float16 if quantization is enabled.
         if half_precision or load_in_8bit or load_in_4bit:
             kwargs["torch_dtype"] = torch.float16
+
+    if is_peft:
+        peft_config = PeftConfig.from_pretrained(name_or_path)
+        peft_model_name_or_path = name_or_path
+        name_or_path = peft_config.base_model_name_or_path
+
+    tokenizer = AutoTokenizer.from_pretrained(name_or_path, **kwargs)
 
     # Support both decoder-only and encoder-decoder models.
     try:
         model = AutoModelForCausalLM.from_pretrained(name_or_path, **kwargs)
     except ValueError:
         model = AutoModelForSeq2SeqLM.from_pretrained(name_or_path, **kwargs)
+    if is_peft:
+        model = PeftModel.from_pretrained(model, peft_model_name_or_path, **kwargs)
 
     # Check if the model has text generation capabilities.
     if not model.can_generate():
